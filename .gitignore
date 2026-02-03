@@ -1,0 +1,6 @@
+# Windows Zone Identifier files
+*:Zone.Identifier
+
+# OS generated files
+.DS_Store
+Thumbs.db

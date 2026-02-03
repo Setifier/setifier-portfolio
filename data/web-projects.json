@@ -1,0 +1,63 @@
+{
+  "projects": [
+    {
+      "id": "web-projects",
+      "title": "Web Development Projects",
+      "projects": [
+        {
+          "id": "aleatory",
+          "title": "Aleatory",
+          "description": "Create custom lottery draws with your own entries",
+          "fullDescription": "Aleatory is a lottery app for creating custom draws with your own entries. Save frequently used items in folders, track complete draw history with timestamps, and enjoy smooth animated wheel transitions.\n\nBuild your library of contestants or options and reuse them instantly. Create tournament brackets with group stages or single-elimination formats, customize rules, and track progression.\n\nUse as guest for quick draws, or create an account to sync your data across devices.",
+          "link": "https://aleatory.fr",
+          "thumbnail": "assets/images/web-projects/aleatory/logo_aleatory.webp",
+          "image": "assets/images/web-projects/aleatory/logo_aleatory.webp",
+          "technologies": ["React", "TypeScript", "Vite", "Supabase"],
+          "allTechnologies": [
+            "React",
+            "TypeScript",
+            "Vite",
+            "Supabase",
+            "Tailwind CSS",
+            "React Router"
+          ]
+        },
+        {
+          "id": "shinydex",
+          "title": "Shinydex",
+          "description": "A project about a shiny new technology.",
+          "link": "https://shinydex.example.com",
+          "thumbnail": "assets/images/web-projects/shinydex/logo.webp",
+          "image": "assets/images/web-projects/shinydex/logo.webp",
+          "technologies": ["Next.js", "TypeScript", "Better-Auth", "Prisma"]
+        },
+        {
+          "id": "portfolio",
+          "title": "My Portfolio",
+          "description": "A showcase of my work and projects.",
+          "link": "You are in the right place!",
+          "thumbnail": "assets/logo.png",
+          "image": "assets/logo.png",
+          "technologies": ["HTML", "CSS", "JavaScript"]
+        },
+        {
+          "id": "yeye-pronos",
+          "title": "Yeye Pronos",
+          "description": "A sports betting prediction platform.",
+          "link": "https://yeyepronos.fr",
+          "thumbnail": "assets/images/web-projects/yeye-pronos/logo_yeye.png",
+          "image": "assets/images/web-projects/yeye-pronos/logo_yeye.png",
+          "technologies": ["TypeScript", "Next.js", "Better-Auth", "Prisma"],
+          "allTechnologies": [
+            "TypeScript",
+            "Next.js",
+            "Better-Auth",
+            "Prisma",
+            "Tailwind CSS",
+            "ESPN API"
+          ]
+        }
+      ]
+    }
+  ]
+}

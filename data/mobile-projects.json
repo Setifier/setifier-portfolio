@@ -1,0 +1,28 @@
+{
+  "projects": [
+    {
+      "id": "mobile-projects",
+      "title": "Mobile Development Projects",
+      "projects": [
+        {
+          "id": "demsBarberShop",
+          "title": "Dem's Barber Shop",
+          "description": "A mobile app for booking haircuts.",
+          "link": "https://demsbarbershop.example.com",
+          "thumbnail": "assets/images/mobile-projects/demsBarberShop/logo_demsBarberShop2.png",
+          "image": "assets/images/mobile-projects/demsBarberShop/logo_demsBarberShop.png",
+          "technologies": ["React Native", "Expo", "Firebase"]
+        },
+        {
+          "id": "more-coming-soon",
+          "title": "More Coming Soon",
+          "description": "Stay tuned for more mobile projects!",
+          "link": "#",
+          "thumbnail": "assets/slim_logo.png",
+          "image": "assets/slim_logo.png",
+          "technologies": ["Swift", "Kotlin", "Flutter"]
+        }
+      ]
+    }
+  ]
+}

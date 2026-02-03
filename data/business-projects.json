@@ -1,0 +1,19 @@
+{
+  "projects": [
+    {
+      "id": "setifier-dd",
+      "title": "Setifier D & D",
+      "projects": [
+        {
+          "id": "creation",
+          "title": "Creation d'entreprise",
+          "description": "",
+          "link": "",
+          "thumbnail": "assets/creation_thumb.png",
+          "image": "assets/creation.png",
+          "technologies": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Slim Etifier - Creative Developer Portfolio - Game Edition"
+    />
+
+    <link
+      rel="icon"
+      type="image/png"
+      href="assets/favicon/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" href="assets/favicon/favicon.ico" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="universe_styles.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Slim Etifier - Game Portfolio</title>
+  </head>
+  <body>
+    <!-- ========== HOME SCREEN ========== -->
+    <div id="welcome-screen" class="active">
+      <div class="stars-background"></div>
+
+      <div class="welcome-content">
+        <div class="logo-container">
+          <img src="assets/logo.png" alt="Slim Etifier" class="main-logo" />
+        </div>
+
+        <h1 class="game-title">
+          <span class="title-line">SLIM</span>
+          <span class="title-line">PORTFOLIO</span>
+        </h1>
+
+        <div class="subtitle">Creative Developer Universe</div>
+
+        <div class="menu-buttons">
+          <button id="new-game-btn" class="new-game-button">
+            <span class="btn-text">NEW GAME</span>
+            <span class="btn-glow"></span>
+          </button>
+
+          <button id="options-btn" class="options-button">
+            <span class="btn-text">OPTIONS</span>
+            <span class="btn-glow"></span>
+          </button>
+        </div>
+
+        <div class="press-start">Press to start your journey</div>
+
+        <div class="tip-container">
+          <span class="tip-label">Tip:</span>
+          <span id="tip-text" class="tip-text"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== UNIVERSE SELECTION SCREEN ========== -->
+    <div id="universe-screen">
+      <canvas id="three-canvas"></canvas>
+
+      <div class="ui-overlay">
+        <h2 class="universe-title">SELECT STAGE</h2>
+
+        <button id="back-to-home-btn" class="back-home-btn">
+          <span>← HOME</span>
+        </button>
+
+        <div class="universe-buttons">
+          <button class="universe-btn" data-universe="dev">
+            <span class="btn-icon">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="16 18 22 12 16 6" />
+                <polyline points="8 6 2 12 8 18" />
+                <line x1="14" y1="4" x2="10" y2="20" />
+              </svg>
+            </span>
+            <span class="btn-label">Web & Mobile Development</span>
+          </button>
+          <button class="universe-btn" data-universe="design">
+            <span class="btn-icon">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 3L2 12h3v8h6v-5h2v5h6v-8h3L12 3z" />
+                <circle cx="12" cy="10" r="2" />
+              </svg>
+            </span>
+            <span class="btn-label">UX / UI Design</span>
+          </button>
+          <button class="universe-btn" data-universe="arts">
+            <span class="btn-icon">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M2 22L12 2l3 7h7l-5.5 5 2 8L12 17l-6.5 5 2-8L2 9h7z" />
+              </svg>
+            </span>
+            <span class="btn-label">Arts & Illustrations</span>
+          </button>
+          <button class="universe-btn" data-universe="game">
+            <span class="btn-icon">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="2" y="6" rx="3" width="20" height="12" />
+                <line x1="6" y1="10" x2="6" y2="14" />
+                <line x1="4" y1="12" x2="8" y2="12" />
+                <circle cx="16" cy="10" r="0.8" fill="currentColor" />
+                <circle cx="19" cy="12" r="0.8" fill="currentColor" />
+                <circle cx="16" cy="14" r="0.8" fill="currentColor" />
+              </svg>
+            </span>
+            <span class="btn-label">Game Development</span>
+          </button>
+        </div>
+
+        <div id="planet-tooltip" class="planet-tooltip">
+          <h4 id="tooltip-name"></h4>
+        </div>
+
+        <div id="selection-modal" class="selection-modal">
+          <button class="close-modal-btn">&times;</button>
+          <h3 id="modal-universe-name"></h3>
+          <p id="modal-universe-description"></p>
+          <button id="enter-universe-btn" class="enter-btn">
+            ENTER PLANET
+          </button>
+        </div>
+
+        <div class="tip-container universe-tip-container">
+          <span class="tip-label">Tip:</span>
+          <span id="universe-tip-text" class="tip-text"></span>
+        </div>
+
+        <svg id="connection-line" class="connection-line">
+          <line
+            id="line"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="0"
+            stroke-width="2"
+            stroke-dasharray="5,5"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ========== OPTIONS SCREEN ========== -->
+    <div id="options-screen">
+      <div class="options-container">
+        <h1 class="options-title">OPTIONS</h1>
+
+        <div class="options-section">
+          <h2>ABOUT ME</h2>
+          <p>
+            Hello! I'm Slim Etifier, a creative full-stack developer with a
+            passion for building immersive and interactive digital experiences.
+            From web applications to game development, I love bringing ideas to
+            life with clean code and great design.
+            <br /><br />
+            This portfolio is a playground to showcase my skills in a more
+            "game-like" way. Feel free to explore!
+          </p>
+        </div>
+
+        <div class="options-section">
+          <h2>SATISFIED CLIENTS</h2>
+          <div class="clients-grid">
+            <div class="client-logo">
+              <p>Client 1</p>
+            </div>
+            <div class="client-logo">
+              <p>Client 2</p>
+            </div>
+            <div class="client-logo">
+              <p>Client 3</p>
+            </div>
+            <div class="client-logo">
+              <p>Client 4</p>
+            </div>
+          </div>
+        </div>
+
+        <button id="options-back-btn" class="back-home-btn">
+          <span>← HOME</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== UNIVERSE CONTENT ========== -->
+    <div id="universe-content">
+      <!-- The content of each universe will be loaded here -->
+    </div>
+
+    <!-- Three.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Application scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/texture-generator.js"></script>
+    <script src="js/three-scene.js"></script>
+    <script src="js/universe-content.js"></script>
+    <script src="js/universe-dev.js"></script>
+    <script src="js/universe-design.js"></script>
+    <script src="js/universe-arts.js"></script>
+    <script src="js/universe-game.js"></script>
+    <script src="js/ui-handlers.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

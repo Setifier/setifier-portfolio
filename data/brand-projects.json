@@ -1,0 +1,46 @@
+{
+  "projects": [
+    {
+      "id": "brand-projects",
+      "title": "Brand & Logo Projects",
+      "projects": [
+        {
+          "id": "karate",
+          "title": "E.S. Hagondange Karaté",
+          "description": "",
+          "link": "",
+          "thumbnail": "assets/karate_thumb.png",
+          "image": "assets/karate.png",
+          "technologies": ["Illustrator"]
+        },
+        {
+          "id": "comite",
+          "title": "Comité Départemental de Moselle de Rugby",
+          "description": "",
+          "link": "",
+          "thumbnail": "assets/comite_thumb.png",
+          "image": "assets/comite.png",
+          "technologies": ["Illustrator"]
+        },
+        {
+          "id": "supernova",
+          "title": "Supernova Music",
+          "description": "Label de musique urbaine. Création du logo et de l'identité visuelle. Projet réalisé en collaboration avec le fondateur de Supernova Music.",
+          "link": "",
+          "thumbnail": "assets/supernova_thumb.png",
+          "image": "assets/supernova.png",
+          "technologies": ["Illustrator"]
+        },
+        {
+          "id": "fench-touch",
+          "title": "The Fench Touch",
+          "description": "",
+          "link": "",
+          "thumbnail": "assets/fench-touch_thumb.png",
+          "image": "assets/fench-touch.png",
+          "technologies": ["Illustrator"]
+        }
+      ]
+    }
+  ]
+}
