@@ -7,48 +7,38 @@ function initDevWorld(container) {
     <div class="dev-world-background"></div>
     <div class="dev-world-content">
       <h1 class="dev-world-title">DEV PROJECTS</h1>
-      <div class="mission-hud">
-        <div class="mission-header">
-          <div class="mission-icon">⚡</div>
-          <div class="mission-text">
-            <h2>MISSION BRIEFING</h2>
-            <p>Explore all development projects to complete your mission</p>
-          </div>
-        </div>
-        <div class="mission-stats">
-          <div class="stat-item"><span class="stat-label">PROJECTS EXPLORED</span><span class="stat-value" id="projects-explored">0</span></div>
-          <div class="stat-divider"></div>
-          <div class="stat-item"><span class="stat-label">TOTAL MISSIONS</span><span class="stat-value" id="total-projects">0</span></div>
-          <div class="stat-divider"></div>
-          <div class="stat-item"><span class="stat-label">COMPLETION</span><span class="stat-value" id="completion-percentage">0%</span></div>
-        </div>
-        <div class="mission-progress"><div class="progress-bar"><div class="progress-fill" id="progress-fill"></div><div class="progress-glow"></div></div></div>
-      </div>
-      <div class="projects-grid" id="projects-grid"></div>
+      <h2 class="dev-section-title">WEB PROJECTS</h2>
+      <div class="projects-grid" id="web-projects-grid"></div>
+      <h2 class="dev-section-title">MOBILE PROJECTS</h2>
+      <div class="projects-grid" id="mobile-projects-grid"></div>
     </div>
   `;
   container.appendChild(devWorldContainer);
 
-  createProjectCards();
+  loadAllProjects();
 }
 
-async function createProjectCards() {
-  let projectsData = [];
+async function loadAllProjects() {
   try {
-    const response = await fetch('data/web-projects.json');
-    const data = await response.json();
-    projectsData = data.projects[0].projects;
+    const [webResponse, mobileResponse] = await Promise.all([
+      fetch('data/web-projects.json'),
+      fetch('data/mobile-projects.json')
+    ]);
+    const webData = await webResponse.json();
+    const mobileData = await mobileResponse.json();
+
+    createProjectCards(webData.projects[0].projects, 'web-projects-grid');
+    createProjectCards(mobileData.projects[0].projects, 'mobile-projects-grid');
+
   } catch (error) {
     console.error('Error loading projects:', error);
-    return;
   }
+}
 
-  updateMissionStats(projectsData.length);
-  exploredProjects.clear();
-  updateMissionProgress();
-
+function createProjectCards(projectsData, containerId) {
   const colors = ['#86cabf', '#8dbdc5', '#96a7c5', '#9e87be', '#b084b1', '#c180a1'];
-  const grid = document.getElementById('projects-grid');
+  const grid = document.getElementById(containerId);
+  if (!grid) return;
 
   projectsData.forEach((project, index) => {
     const color = colors[index % colors.length];
@@ -66,53 +56,8 @@ async function createProjectCards() {
         <button class="project-card-btn" style="background: ${color}; border-color: ${color};">View Details →</button>
       </div>`;
     card.addEventListener('click', () => {
-      openProjectModal(project, color, {
-        onOpen: (projectId) => {
-          if (!exploredProjects.has(projectId)) {
-            exploredProjects.add(projectId);
-            updateMissionProgress();
-          }
-        }
-      });
+      openProjectModal(project, color);
     });
     grid.appendChild(card);
   });
-}
-
-function updateMissionStats(totalProjects) {
-  const totalEl = document.getElementById('total-projects');
-  if (totalEl) totalEl.textContent = totalProjects;
-}
-
-function updateMissionProgress() {
-  const exploredEl = document.getElementById('projects-explored');
-  const totalEl = document.getElementById('total-projects');
-  const percentageEl = document.getElementById('completion-percentage');
-  const progressFill = document.getElementById('progress-fill');
-  if(!totalEl || !exploredEl || !percentageEl || !progressFill) return;
-  const explored = exploredProjects.size;
-  const total = parseInt(totalEl.textContent) || 0;
-  const percentage = total > 0 ? Math.round((explored / total) * 100) : 0;
-  exploredEl.textContent = explored;
-  percentageEl.textContent = `${percentage}%`;
-  progressFill.style.width = `${percentage}%`;
-  if (percentage === 100) {
-    setTimeout(() => showMissionComplete(), 800);
-  }
-}
-
-function showMissionComplete() {
-  const missionHud = document.querySelector('.mission-hud');
-  if (missionHud) missionHud.classList.add('mission-complete');
-  const overlay = document.createElement('div');
-  overlay.className = 'mission-complete-overlay';
-  overlay.innerHTML = `<div class="mission-complete-content">...</div>`;
-  document.body.appendChild(overlay);
-  setTimeout(() => overlay.classList.add('show'), 100);
-  const closeOverlay = () => {
-    overlay.classList.remove('show');
-    setTimeout(() => overlay.remove(), 500);
-  };
-  setTimeout(closeOverlay, 5000);
-  overlay.addEventListener('click', closeOverlay);
 }
