@@ -1,46 +1,42 @@
 {
+  "id": "brand-projects",
+  "title": "Brand & Logo Projects",
   "projects": [
     {
-      "id": "brand-projects",
-      "title": "Brand & Logo Projects",
-      "projects": [
-        {
-          "id": "karate",
-          "title": "E.S. Hagondange Karaté",
-          "description": "",
-          "link": "",
-          "thumbnail": "assets/karate_thumb.png",
-          "image": "assets/karate.png",
-          "technologies": ["Illustrator"]
-        },
-        {
-          "id": "comite",
-          "title": "Comité Départemental de Moselle de Rugby",
-          "description": "",
-          "link": "",
-          "thumbnail": "assets/comite_thumb.png",
-          "image": "assets/comite.png",
-          "technologies": ["Illustrator"]
-        },
-        {
-          "id": "supernova",
-          "title": "Supernova Music",
-          "description": "Label de musique urbaine. Création du logo et de l'identité visuelle. Projet réalisé en collaboration avec le fondateur de Supernova Music.",
-          "link": "",
-          "thumbnail": "assets/supernova_thumb.png",
-          "image": "assets/supernova.png",
-          "technologies": ["Illustrator"]
-        },
-        {
-          "id": "fench-touch",
-          "title": "The Fench Touch",
-          "description": "",
-          "link": "",
-          "thumbnail": "assets/fench-touch_thumb.png",
-          "image": "assets/fench-touch.png",
-          "technologies": ["Illustrator"]
-        }
-      ]
+      "id": "karate",
+      "title": "E.S. Hagondange Karate",
+      "description": "",
+      "link": "",
+      "thumbnail": "assets/images/brand-projects/karate/logo_ESH_Karaté.png",
+      "image": "assets/images/brand-projects/karate/logo_ESH_Karaté.png",
+      "technologies": ["Illustrator"]
+    },
+    {
+      "id": "comite",
+      "title": "Comite Departemental de Moselle de Rugby",
+      "description": "",
+      "link": "",
+      "thumbnail": "assets/images/brand-projects/comite/logo_cd57_rugby.png",
+      "image": "assets/images/brand-projects/comite/logo_cd57_rugby.png",
+      "technologies": ["Illustrator"]
+    },
+    {
+      "id": "supernova",
+      "title": "Supernova Music",
+      "description": "Urban music label. Logo and visual identity creation, in collaboration with the Supernova Music founder.",
+      "link": "",
+      "thumbnail": "assets/images/brand-projects/supernova/logo_supernova_music.png",
+      "image": "assets/images/brand-projects/supernova/logo_supernova_music.png",
+      "technologies": ["Illustrator"]
+    },
+    {
+      "id": "fench-touch",
+      "title": "The Fench Touch",
+      "description": "",
+      "link": "",
+      "thumbnail": "assets/images/brand-projects/fench-touch/french_touch_vector.png",
+      "image": "assets/images/brand-projects/fench-touch/french_touch_vector.png",
+      "technologies": ["Illustrator"]
     }
   ]
 }

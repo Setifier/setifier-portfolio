@@ -1,10 +1,12 @@
-import { openProjectModal } from "./universe-content.js";
+import { openProjectModal } from './universe-content.js';
+import { COLORS } from './constants.js';
 
 export function initDevWorld(container) {
-  console.log('💻 Initializing DEV WORLD - Clean Interface...');
+  console.log('Initializing DEV WORLD...');
 
   const devWorldContainer = document.createElement('div');
   devWorldContainer.className = 'dev-world-container';
+  // Safe: static HTML structure
   devWorldContainer.innerHTML = `
     <div class="dev-world-background"></div>
     <div class="dev-world-content">
@@ -24,38 +26,41 @@ async function loadAllProjects() {
   try {
     const [webResponse, mobileResponse] = await Promise.all([
       fetch('data/web-projects.json'),
-      fetch('data/mobile-projects.json')
+      fetch('data/mobile-projects.json'),
     ]);
+
+    if (!webResponse.ok) throw new Error(`Web projects: ${webResponse.status}`);
+    if (!mobileResponse.ok) throw new Error(`Mobile projects: ${mobileResponse.status}`);
+
     const webData = await webResponse.json();
     const mobileData = await mobileResponse.json();
 
-    createProjectCards(webData.projects[0].projects, 'web-projects-grid');
-    createProjectCards(mobileData.projects[0].projects, 'mobile-projects-grid');
-
+    createProjectCards(webData.projects, 'web-projects-grid');
+    createProjectCards(mobileData.projects, 'mobile-projects-grid');
   } catch (error) {
     console.error('Error loading projects:', error);
   }
 }
 
 function createProjectCards(projectsData, containerId) {
-  const colors = ['#86cabf', '#8dbdc5', '#96a7c5', '#9e87be', '#b084b1', '#c180a1'];
   const grid = document.getElementById(containerId);
   if (!grid) return;
 
   projectsData.forEach((project, index) => {
-    const color = colors[index % colors.length];
+    const color = COLORS.cardCycle[index % COLORS.cardCycle.length];
     const card = document.createElement('div');
     card.className = 'project-card';
     card.style.animationDelay = `${index * 0.1}s`;
     card.style.setProperty('--card-color', color);
     const logoSrc = project.thumbnail || project.image || 'assets/logo.png';
+    // Safe: data from local JSON we control
     card.innerHTML = `
       <div class="project-card-banner" style="border-color: ${color};"><img src="${logoSrc}" alt="${project.title}" class="project-card-logo"></div>
       <div class="project-card-body">
         <h3 class="project-card-title">${project.title}</h3>
         <p class="project-card-description">${project.description}</p>
         <div class="project-card-tech">${(project.technologies.slice(0, 4)).map(tech => `<span class="tech-badge" style="border-color: ${color}; color: ${color};">${tech}</span>`).join('')}</div>
-        <button class="project-card-btn" style="background: ${color}; border-color: ${color};">View Details →</button>
+        <button class="project-card-btn" style="background: ${color}; border-color: ${color};">View Details &rarr;</button>
       </div>`;
     card.addEventListener('click', () => {
       openProjectModal(project, color);

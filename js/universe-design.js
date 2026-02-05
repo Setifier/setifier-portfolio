@@ -1,7 +1,8 @@
 import { openProjectModal, initPlaceholderUniverse } from './universe-content.js';
+import { COLORS } from './constants.js';
 
 export async function initDesignPlanet(container) {
-  console.log('🎨 Initializing DESIGN PLANET - Visual Gallery...');
+  console.log('Initializing DESIGN PLANET...');
 
   const designPlanetContainer = document.createElement('div');
   designPlanetContainer.className = 'design-planet-container';
@@ -9,29 +10,16 @@ export async function initDesignPlanet(container) {
   let projectsData = [];
   try {
     const response = await fetch('data/brand-projects.json');
+    if (!response.ok) throw new Error(`Brand projects: ${response.status}`);
     const data = await response.json();
-    projectsData = data.projects[0].projects;
+    projectsData = data.projects;
   } catch (error) {
     console.error('Error loading design projects:', error);
     initPlaceholderUniverse(container, 'DESIGN PLANET', 'Error loading projects.');
     return;
   }
 
-  // Correcting image paths
-  const correctImagePaths = {
-    "karate": "assets/images/brand-projects/karate/logo_ESH_Karaté.png",
-    "comite": "assets/images/brand-projects/comite/logo_cd57_rugby.png",
-    "supernova": "assets/images/brand-projects/supernova/logo_supernova_music.png",
-    "fench-touch": "assets/images/brand-projects/fench-touch/french_touch_vector.png",
-  };
-
-  projectsData.forEach(p => {
-    if (correctImagePaths[p.id]) {
-      p.image = correctImagePaths[p.id];
-      p.thumbnail = correctImagePaths[p.id];
-    }
-  });
-
+  // Safe: data from local JSON we control
   designPlanetContainer.innerHTML = `
     <div class="design-planet-background"></div>
     <div class="design-planet-content">
@@ -50,8 +38,8 @@ export async function initDesignPlanet(container) {
           `).join('')}
         </div>
         <div class="gallery-nav">
-          <button class="nav-arrow prev">←</button>
-          <button class="nav-arrow next">→</button>
+          <button class="nav-arrow prev">&larr;</button>
+          <button class="nav-arrow next">&rarr;</button>
         </div>
       </div>
     </div>
@@ -64,27 +52,26 @@ export async function initDesignPlanet(container) {
   const prevButton = designPlanetContainer.querySelector('.nav-arrow.prev');
 
   let currentIndex = 0;
-  const slideWidth = slides[0].getBoundingClientRect().width;
+
+  // Recalculate on resize so the carousel stays aligned
+  const getSlideWidth = () => slides[0].getBoundingClientRect().width;
 
   const moveToSlide = (targetIndex) => {
-    track.style.transform = 'translateX(-' + slideWidth * targetIndex + 'px)';
+    track.style.transform = `translateX(-${getSlideWidth() * targetIndex}px)`;
     currentIndex = targetIndex;
   };
 
   nextButton.addEventListener('click', () => {
-    const nextIndex = (currentIndex + 1) % slides.length;
-    moveToSlide(nextIndex);
+    moveToSlide((currentIndex + 1) % slides.length);
   });
 
   prevButton.addEventListener('click', () => {
-    const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
-    moveToSlide(prevIndex);
+    moveToSlide((currentIndex - 1 + slides.length) % slides.length);
   });
 
   slides.forEach((slide, index) => {
     slide.addEventListener('click', () => {
-        const project = projectsData[index];
-        openProjectModal(project, '#c180a1');
+      openProjectModal(projectsData[index], COLORS.designAccent);
     });
   });
 }

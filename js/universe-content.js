@@ -1,4 +1,5 @@
-import { state } from './config.js';
+import * as State from './state.js';
+import { deselectPlanet } from './planet-interaction.js';
 
 export async function initUniverseContent(universeId) {
   const universeContent = document.getElementById('universe-content');
@@ -6,13 +7,13 @@ export async function initUniverseContent(universeId) {
 
   const backBtn = document.createElement('button');
   backBtn.className = 'universe-back-btn';
-  backBtn.innerHTML = '← BACK TO PLANETS';
+  backBtn.innerHTML = '&larr; BACK TO PLANETS';
   backBtn.onclick = () => exitUniverseContent();
   universeContent.appendChild(backBtn);
 
   createProjectModal();
 
-  switch(universeId) {
+  switch (universeId) {
     case 'dev': {
       const { initDevWorld } = await import('./universe-dev.js');
       initDevWorld(universeContent);
@@ -36,25 +37,25 @@ export async function initUniverseContent(universeId) {
   }
 }
 
-export async function exitUniverseContent() {
-  state.currentScreen = 'universe';
+export function exitUniverseContent() {
+  State.set('currentScreen', 'universe');
 
-  if (state.universeAnimationId) {
-    cancelAnimationFrame(state.universeAnimationId);
-    state.universeAnimationId = null;
+  const animId = State.get('universeAnimationId');
+  if (animId) {
+    cancelAnimationFrame(animId);
+    State.set('universeAnimationId', null);
   }
 
   const universeContent = document.getElementById('universe-content');
   universeContent.style.opacity = '0';
 
-  setTimeout(async () => {
+  setTimeout(() => {
     universeContent.style.display = 'none';
     universeContent.innerHTML = '';
 
     const universeScreen = document.getElementById('universe-screen');
     universeScreen.classList.add('active');
 
-    const { deselectPlanet } = await import('./ui-handlers.js');
     deselectPlanet();
   }, 500);
 }
@@ -65,6 +66,7 @@ function createProjectModal() {
   const modal = document.createElement('div');
   modal.id = 'project-modal';
   modal.className = 'project-modal';
+  // Safe: static markup, no user-supplied data
   modal.innerHTML = `
     <div class="modal-overlay"></div>
     <div class="modal-content">
@@ -88,7 +90,7 @@ function createProjectModal() {
       </div>
       <div class="modal-footer">
         <a class="modal-link-btn" href="#" target="_blank" rel="noopener noreferrer">
-          Visit Project →
+          Visit Project &rarr;
         </a>
       </div>
     </div>
@@ -109,7 +111,7 @@ export function openProjectModal(project, color, { onOpen } = {}) {
   }
 
   const imagePath = project.image || project.thumbnail || 'assets/logo.png';
-  const description = project.description || "No description available for this project.";
+  const description = project.description || 'No description available for this project.';
   const fullDescription = project.fullDescription || description;
 
   modal.querySelector('.modal-image').src = imagePath;
@@ -121,6 +123,7 @@ export function openProjectModal(project, color, { onOpen } = {}) {
   const allTechs = project.allTechnologies || project.technologies || [];
   if (allTechs.length > 0) {
     techList.parentElement.style.display = 'block';
+    // Safe: tech names come from local JSON we control
     techList.innerHTML = allTechs.map(tech =>
       `<span class="modal-tech-badge" style="border-color: ${color}; color: ${color};">${tech}</span>`
     ).join('');
@@ -154,6 +157,7 @@ function closeProjectModal() {
 export function initPlaceholderUniverse(container, title, message) {
   const placeholderContainer = document.createElement('div');
   placeholderContainer.className = 'placeholder-container';
+  // Safe: title/message are hardcoded strings from our own code
   placeholderContainer.innerHTML = `
     <h1 class="placeholder-title">${title}</h1>
     <p class="placeholder-message">${message}</p>

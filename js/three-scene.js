@@ -1,64 +1,70 @@
-import { state, universesData } from './config.js';
+import * as State from './state.js';
+import { UNIVERSES, SCENE, DEV_RING, GAME_SATELLITES } from './constants.js';
+import { on } from './events.js';
 import { createAdvancedPlanetTextures } from './texture-generator.js';
-import { onMouseMove, onPlanetClick, onPlanetHover, onPlanetLeave, updateConnectionLine } from './ui-handlers.js';
+import { setupPlanetListeners, onPlanetHover, onPlanetLeave, updateConnectionLine } from './planet-interaction.js';
 
-export function initThreeScene() {
-  console.log('🌌 Initializing 3D Universe Scene...');
+// Register event-bus listeners at module level so screen-transitions
+// never needs to import this file directly (no circular deps).
+on('scene:init', initThreeScene);
+on('camera:move', (targetPos) => { cameraTargetPos.copy(targetPos); });
+
+let cameraTargetPos = new THREE.Vector3(0, 0, SCENE.defaultCameraZ);
+let resizeController = null;
+
+function initThreeScene() {
+  console.log('Initializing 3D Universe Scene...');
 
   const canvas = document.getElementById('three-canvas');
 
-  // Scene setup
-  state.threeScene = new THREE.Scene();
-  state.threeScene.background = new THREE.Color(0x000000);
+  State.set('threeScene', new THREE.Scene());
+  State.get('threeScene').background = new THREE.Color(0x000000);
 
-  // Camera setup
-  state.threeCamera = new THREE.PerspectiveCamera(
-    75, // Field of view
-    window.innerWidth / window.innerHeight, // Aspect ratio
-    0.1, // Near clipping plane
-    1000 // Far clipping plane
-  );
-  state.threeCamera.position.z = 50;
+  State.set('threeCamera', new THREE.PerspectiveCamera(
+    SCENE.fov,
+    window.innerWidth / window.innerHeight,
+    SCENE.near,
+    SCENE.far,
+  ));
+  State.get('threeCamera').position.z = SCENE.defaultCameraZ;
 
-  // Renderer setup
-  state.threeRenderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    antialias: true,
-    alpha: true
-  });
-  state.threeRenderer.setSize(window.innerWidth, window.innerHeight);
-  state.threeRenderer.setPixelRatio(window.devicePixelRatio);
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  State.set('threeRenderer', renderer);
 
   createStarfield();
   createPlanets();
 
-  // Lights
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-  state.threeScene.add(ambientLight);
+  const scene = State.get('threeScene');
 
-  const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  const ambientLight = new THREE.AmbientLight(0xffffff, SCENE.ambientIntensity);
+  scene.add(ambientLight);
+
+  const mainLight = new THREE.DirectionalLight(0xffffff, SCENE.mainLightIntensity);
   mainLight.position.set(10, 10, 10);
-  state.threeScene.add(mainLight);
+  scene.add(mainLight);
 
-  const fillLight = new THREE.DirectionalLight(0x4488ff, 0.6);
+  const fillLight = new THREE.DirectionalLight(0x4488ff, SCENE.fillLightIntensity);
   fillLight.position.set(-10, -10, 5);
-  state.threeScene.add(fillLight);
+  scene.add(fillLight);
 
-  const rimLight = new THREE.DirectionalLight(0xff8844, 0.4);
+  const rimLight = new THREE.DirectionalLight(0xff8844, SCENE.rimLightIntensity);
   rimLight.position.set(0, -10, -10);
-  state.threeScene.add(rimLight);
+  scene.add(rimLight);
 
-  // Initialize raycaster for interactions
-  state.raycaster = new THREE.Raycaster();
-  state.mouse = new THREE.Vector2();
+  State.set('raycaster', new THREE.Raycaster());
+  State.set('mouse', new THREE.Vector2());
 
-  canvas.addEventListener('mousemove', onMouseMove, false);
-  canvas.addEventListener('click', onPlanetClick, false);
-  window.addEventListener('resize', onWindowResize, false);
+  setupPlanetListeners(canvas);
+
+  // Use AbortController for cleanup
+  if (resizeController) resizeController.abort();
+  resizeController = new AbortController();
+  window.addEventListener('resize', onWindowResize, { signal: resizeController.signal });
 
   animate();
-
-  console.log('✅ 3D Scene Ready!');
+  console.log('3D Scene Ready');
 }
 
 function createStarfield() {
@@ -77,46 +83,40 @@ function createStarfield() {
   ctx.fillRect(0, 0, 64, 64);
 
   const starTexture = new THREE.CanvasTexture(canvas);
+  const scene = State.get('threeScene');
 
-  const starGroups = [
-    { count: 1000, size: 0.3, opacity: 0.6 },
-    { count: 500, size: 0.8, opacity: 0.8 },
-    { count: 200, size: 1.5, opacity: 1.0 }
-  ];
-
-  starGroups.forEach(group => {
+  SCENE.starGroups.forEach(group => {
     const starGeometry = new THREE.BufferGeometry();
-    const starPositions = new Float32Array(group.count * 3);
+    const positions = new Float32Array(group.count * 3);
 
     for (let i = 0; i < group.count * 3; i += 3) {
-      starPositions[i] = (Math.random() - 0.5) * 200;
-      starPositions[i + 1] = (Math.random() - 0.5) * 200;
-      starPositions[i + 2] = (Math.random() - 0.5) * 200;
+      positions[i] = (Math.random() - 0.5) * SCENE.starSpread;
+      positions[i + 1] = (Math.random() - 0.5) * SCENE.starSpread;
+      positions[i + 2] = (Math.random() - 0.5) * SCENE.starSpread;
     }
 
-    starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-    const starMaterial = new THREE.PointsMaterial({
+    const material = new THREE.PointsMaterial({
       map: starTexture,
       size: group.size,
       transparent: true,
       opacity: group.opacity,
       blending: THREE.AdditiveBlending,
-      depthWrite: false
+      depthWrite: false,
     });
 
-    const stars = new THREE.Points(starGeometry, starMaterial);
-    state.threeScene.add(stars);
+    scene.add(new THREE.Points(starGeometry, material));
   });
 }
 
 function createPlanets() {
-  console.log('🪐 Creating planets...');
+  console.log('Creating planets...');
+  const scene = State.get('threeScene');
 
-  universesData.forEach((universeData) => {
+  UNIVERSES.forEach((universeData) => {
     const planetSize = universeData.size || 5;
     const geometry = new THREE.SphereGeometry(planetSize, 64, 64);
-
     const textures = createAdvancedPlanetTextures(universeData.id, universeData.color);
 
     const material = new THREE.MeshStandardMaterial({
@@ -126,14 +126,14 @@ function createPlanets() {
       roughness: textures.roughness,
       metalness: textures.metalness,
       emissive: universeData.emissive,
-      emissiveIntensity: 0.3
+      emissiveIntensity: 0.3,
     });
 
     const planetMesh = new THREE.Mesh(geometry, material);
     planetMesh.position.set(
       universeData.position.x,
       universeData.position.y,
-      universeData.position.z
+      universeData.position.z,
     );
 
     planetMesh.userData = {
@@ -141,90 +141,102 @@ function createPlanets() {
       name: universeData.name,
       description: universeData.description,
       originalY: universeData.position.y,
-      rotationSpeed: Math.random() * 0.002 + 0.001
+      rotationSpeed: Math.random() * 0.002 + 0.001,
     };
 
-    state.threeScene.add(planetMesh);
+    scene.add(planetMesh);
 
     const glowGeometry = new THREE.SphereGeometry(planetSize + 0.5, 64, 64);
     const glowMaterial = new THREE.MeshBasicMaterial({
       color: universeData.glowColor,
       transparent: true,
       opacity: 0.2,
-      side: THREE.BackSide
+      side: THREE.BackSide,
     });
     const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
     glowMesh.position.copy(planetMesh.position);
-    state.threeScene.add(glowMesh);
+    scene.add(glowMesh);
 
-    const planetLight = new THREE.PointLight(universeData.glowColor, 0.8, 30);
+    const planetLight = new THREE.PointLight(universeData.glowColor, SCENE.planetLightIntensity, SCENE.planetLightRange);
     planetLight.position.copy(planetMesh.position);
-    state.threeScene.add(planetLight);
+    scene.add(planetLight);
 
     let ring = null;
     let satellite = null;
 
     if (universeData.id === 'dev') {
-      const ringGeometry = new THREE.RingGeometry(planetSize + 1.5, planetSize + 3, 64);
+      const ringGeometry = new THREE.RingGeometry(planetSize + DEV_RING.innerOffset, planetSize + DEV_RING.outerOffset, 64);
       const ringMaterial = new THREE.MeshStandardMaterial({
-        color: 0x86cabf,
+        color: DEV_RING.color,
         side: THREE.DoubleSide,
         transparent: true,
         opacity: 0.6,
         metalness: 0.8,
         roughness: 0.2,
-        emissive: 0x003344,
-        emissiveIntensity: 0.3
+        emissive: DEV_RING.emissive,
+        emissiveIntensity: 0.3,
       });
       ring = new THREE.Mesh(ringGeometry, ringMaterial);
       ring.position.copy(planetMesh.position);
-      ring.rotation.x = Math.PI / 2.5;
-      state.threeScene.add(ring);
+      ring.rotation.x = DEV_RING.tiltX;
+      scene.add(ring);
     }
 
     if (universeData.id === 'game') {
       const satellites = [];
-      const sat1Geometry = new THREE.SphereGeometry(0.6, 16, 16);
-      const sat1Material = new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0xffff00, emissiveIntensity: 0.6, metalness: 0.8, roughness: 0.2 });
-      const satellite1 = new THREE.Mesh(sat1Geometry, sat1Material);
-      const orbit1Radius = planetSize + 3.5;
-      satellite1.position.set(planetMesh.position.x + orbit1Radius, planetMesh.position.y, planetMesh.position.z);
-      satellite1.userData = { orbitRadius: orbit1Radius, orbitSpeed: 0.006, orbitAngle: 0, orbitTilt: 0.2, planetPos: planetMesh.position };
-      state.threeScene.add(satellite1);
-      satellites.push(satellite1);
-
-      const sat2Geometry = new THREE.SphereGeometry(0.5, 16, 16);
-      const sat2Material = new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 0.6, metalness: 0.8, roughness: 0.2 });
-      const satellite2 = new THREE.Mesh(sat2Geometry, sat2Material);
-      const orbit2Radius = planetSize + 5.5;
-      satellite2.position.set(planetMesh.position.x - orbit2Radius, planetMesh.position.y, planetMesh.position.z);
-      satellite2.userData = { orbitRadius: orbit2Radius, orbitSpeed: 0.004, orbitAngle: Math.PI, orbitTilt: -0.3, planetPos: planetMesh.position };
-      state.threeScene.add(satellite2);
-      satellites.push(satellite2);
+      GAME_SATELLITES.forEach(cfg => {
+        const satGeometry = new THREE.SphereGeometry(cfg.radius, 16, 16);
+        const satMaterial = new THREE.MeshStandardMaterial({
+          color: cfg.color,
+          emissive: cfg.color,
+          emissiveIntensity: 0.6,
+          metalness: 0.8,
+          roughness: 0.2,
+        });
+        const sat = new THREE.Mesh(satGeometry, satMaterial);
+        const orbitRadius = planetSize + cfg.orbitOffset;
+        sat.position.set(
+          planetMesh.position.x + Math.cos(cfg.startAngle) * orbitRadius,
+          planetMesh.position.y,
+          planetMesh.position.z + Math.sin(cfg.startAngle) * orbitRadius,
+        );
+        sat.userData = {
+          orbitRadius,
+          orbitSpeed: cfg.speed,
+          orbitAngle: cfg.startAngle,
+          orbitTilt: cfg.tilt,
+          planetPos: planetMesh.position,
+        };
+        scene.add(sat);
+        satellites.push(sat);
+      });
       satellite = satellites;
     }
 
-    state.planets.push({ mesh: planetMesh, glow: glowMesh, light: planetLight, ring: ring, satellite: satellite, data: universeData });
+    State.get('planets').push({
+      mesh: planetMesh, glow: glowMesh, light: planetLight,
+      ring, satellite, data: universeData,
+    });
   });
 
-  console.log(`✅ ${state.planets.length} planets created!`);
+  console.log(`${State.get('planets').length} planets created`);
 }
 
-let cameraTargetPos = new THREE.Vector3(0, 0, 50);
-
 function animate() {
-  requestAnimationFrame(animate);
+  State.set('threeAnimationId', requestAnimationFrame(animate));
 
-  // Star rotation
-  state.threeScene.children.forEach((child) => {
+  const scene = State.get('threeScene');
+  const planets = State.get('planets');
+
+  // Slow star-field rotation
+  scene.children.forEach((child) => {
     if (child instanceof THREE.Points) {
-      child.rotation.y += 0.00006;
-      child.rotation.x += 0.00002;
+      child.rotation.y += SCENE.starRotationY;
+      child.rotation.x += SCENE.starRotationX;
     }
   });
 
-  // Planet animation
-  state.planets.forEach((planet) => {
+  planets.forEach((planet) => {
     planet.mesh.rotation.y += planet.mesh.userData.rotationSpeed;
     planet.glow.rotation.y += planet.mesh.userData.rotationSpeed;
 
@@ -254,43 +266,46 @@ function animate() {
   });
 
   // Hover detection
-  if (state.raycaster && state.mouse && state.currentScreen === 'universe') {
-    state.raycaster.setFromCamera(state.mouse, state.threeCamera);
-    const planetMeshes = state.planets.map(p => p.mesh);
-    const intersects = state.raycaster.intersectObjects(planetMeshes);
+  const raycaster = State.get('raycaster');
+  const mouse = State.get('mouse');
+  if (raycaster && mouse && State.get('currentScreen') === 'universe') {
+    raycaster.setFromCamera(mouse, State.get('threeCamera'));
+    const planetMeshes = planets.map(p => p.mesh);
+    const intersects = raycaster.intersectObjects(planetMeshes);
 
     if (intersects.length > 0) {
       const newHoveredPlanet = intersects[0].object;
-      if (state.hoveredPlanet !== newHoveredPlanet) {
+      if (State.get('hoveredPlanet') !== newHoveredPlanet) {
         onPlanetHover(newHoveredPlanet);
       }
-    } else if (state.hoveredPlanet) {
+    } else if (State.get('hoveredPlanet')) {
       onPlanetLeave();
     }
   }
 
   updateCamera();
-  if (state.selectedPlanet) {
+  if (State.get('selectedPlanet')) {
     updateConnectionLine();
   }
 
-  if (state.threeRenderer && state.threeScene && state.threeCamera) {
-    state.threeRenderer.render(state.threeScene, state.threeCamera);
+  const renderer = State.get('threeRenderer');
+  const threeScene = State.get('threeScene');
+  const camera = State.get('threeCamera');
+  if (renderer && threeScene && camera) {
+    renderer.render(threeScene, camera);
   }
 }
 
 function onWindowResize() {
-  if (state.threeCamera && state.threeRenderer) {
-    state.threeCamera.aspect = window.innerWidth / window.innerHeight;
-    state.threeCamera.updateProjectionMatrix();
-    state.threeRenderer.setSize(window.innerWidth, window.innerHeight);
+  const camera = State.get('threeCamera');
+  const renderer = State.get('threeRenderer');
+  if (camera && renderer) {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
   }
 }
 
-export function animateCamera(targetPos) {
-  cameraTargetPos.copy(targetPos);
-}
-
 function updateCamera() {
-  state.threeCamera.position.lerp(cameraTargetPos, 0.05);
+  State.get('threeCamera').position.lerp(cameraTargetPos, SCENE.cameraLerp);
 }
