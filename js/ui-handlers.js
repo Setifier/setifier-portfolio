@@ -1,4 +1,8 @@
-function initWelcomeScreen() {
+import { state, universesData } from './config.js';
+import { initThreeScene, animateCamera } from './three-scene.js';
+import { initUniverseContent, exitUniverseContent } from './universe-content.js';
+
+export function initWelcomeScreen() {
   const newGameBtn = document.getElementById('new-game-btn');
   const optionsBtn = document.getElementById('options-btn');
 
@@ -125,12 +129,12 @@ function transitionToUniverseScreen() {
   setTimeout(() => {
     welcomeScreen.style.display = 'none';
     universeScreen.classList.add('active');
-    currentScreen = 'universe';
+    state.currentScreen = 'universe';
 
     startUniverseTips();
 
     // The 3D scene should only be initialized once
-    if (!threeRenderer) {
+    if (!state.threeRenderer) {
       initThreeScene();
     }
   }, 1000);
@@ -145,11 +149,11 @@ function transitionToOptionsScreen() {
   setTimeout(() => {
     welcomeScreen.style.display = 'none';
     optionsScreen.classList.add('active');
-    currentScreen = 'options';
+    state.currentScreen = 'options';
   }, 1000);
 }
 
-function initUniverseButtons() {
+export function initUniverseButtons() {
   const buttons = document.querySelectorAll('.universe-btn');
   const enterBtn = document.getElementById('enter-universe-btn');
 
@@ -162,14 +166,14 @@ function initUniverseButtons() {
 
   if (enterBtn) {
     enterBtn.addEventListener('click', () => {
-      if (selectedPlanet) {
-        goToUniverse(selectedPlanet.data.id);
+      if (state.selectedPlanet) {
+        goToUniverse(state.selectedPlanet.data.id);
       }
     });
   }
 }
 
-function initCloseButtons() {
+export function initCloseButtons() {
   const closeBtn = document.querySelector('.close-modal-btn');
   const backHomeBtn = document.getElementById('back-to-home-btn');
   const optionsBackBtn = document.getElementById('options-back-btn');
@@ -198,7 +202,7 @@ function backToHome() {
   const universeScreen = document.getElementById('universe-screen');
   const welcomeScreen = document.getElementById('welcome-screen');
   
-  if (currentScreen === 'content') {
+  if (state.currentScreen === 'content') {
     exitUniverseContent();
   } else {
     universeScreen.classList.remove('active');
@@ -206,7 +210,7 @@ function backToHome() {
     setTimeout(() => {
         welcomeScreen.style.display = 'flex';
         welcomeScreen.classList.remove('hidden');
-        currentScreen = 'welcome';
+        state.currentScreen = 'welcome';
     }, 500);
   }
 }
@@ -220,21 +224,21 @@ function backToWelcomeFromOptions() {
     setTimeout(() => {
         welcomeScreen.style.display = 'flex';
         welcomeScreen.classList.remove('hidden');
-        currentScreen = 'welcome';
+        state.currentScreen = 'welcome';
     }, 500);
 }
-function onMouseMove(event) {
+export function onMouseMove(event) {
   const canvas = event.target;
   const rect = canvas.getBoundingClientRect();
-  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  state.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  state.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 }
 
-function onPlanetHover(planetMesh) {
-  hoveredPlanet = planetMesh;
+export function onPlanetHover(planetMesh) {
+  state.hoveredPlanet = planetMesh;
   document.body.style.cursor = 'pointer';
 
-  const planet = planets.find(p => p.mesh === planetMesh);
+  const planet = state.planets.find(p => p.mesh === planetMesh);
   if (planet) {
     planet.glow.material.opacity = 0.4;
     planet.glow.scale.set(1.1, 1.1, 1.1);
@@ -242,22 +246,22 @@ function onPlanetHover(planetMesh) {
   }
 }
 
-function onPlanetLeave() {
-  if (hoveredPlanet) {
-    const planet = planets.find(p => p.mesh === hoveredPlanet);
-    if (planet && planet !== selectedPlanet) {
+export function onPlanetLeave() {
+  if (state.hoveredPlanet) {
+    const planet = state.planets.find(p => p.mesh === state.hoveredPlanet);
+    if (planet && planet !== state.selectedPlanet) {
         planet.glow.material.opacity = 0.2;
         planet.glow.scale.set(1, 1, 1);
     }
   }
-  hoveredPlanet = null;
+  state.hoveredPlanet = null;
   document.body.style.cursor = 'default';
   hideTooltip();
 }
 
-function onPlanetClick(event) {
-  if (hoveredPlanet) {
-    const universeId = hoveredPlanet.userData.id;
+export function onPlanetClick(event) {
+  if (state.hoveredPlanet) {
+    const universeId = state.hoveredPlanet.userData.id;
     console.log(`🪐 Selecting ${universeId} planet...`);
     selectPlanet(universeId);
   } else {
@@ -270,16 +274,16 @@ function onPlanetClick(event) {
 }
 
 function selectPlanet(universeId) {
-  const planet = planets.find(p => p.data.id === universeId);
-  if (!planet || planet === selectedPlanet) return;
+  const planet = state.planets.find(p => p.data.id === universeId);
+  if (!planet || planet === state.selectedPlanet) return;
 
-  selectedPlanet = planet;
+  state.selectedPlanet = planet;
 
   document.querySelectorAll('.universe-btn').forEach(btn => btn.classList.remove('active'));
   const activeBtn = document.querySelector(`[data-universe="${universeId}"]`);
   if (activeBtn) activeBtn.classList.add('active');
 
-  planets.forEach(p => {
+  state.planets.forEach(p => {
     p.glow.material.opacity = 0.2;
     p.glow.scale.set(1, 1, 1);
   });
@@ -310,18 +314,18 @@ function selectPlanet(universeId) {
 }
 
 function deselectPlanet() {
-  if (!selectedPlanet) return;
-  selectedPlanet = null;
+  if (!state.selectedPlanet) return;
+  state.selectedPlanet = null;
 
   document.querySelectorAll('.universe-btn').forEach(btn => btn.classList.remove('active'));
 
-  planets.forEach(p => {
+  state.planets.forEach(p => {
     p.glow.material.opacity = 0.2;
     p.glow.scale.set(1, 1, 1);
   });
   
-  if (hoveredPlanet) {
-    const planet = planets.find(p => p.mesh === hoveredPlanet);
+  if (state.hoveredPlanet) {
+    const planet = state.planets.find(p => p.mesh === state.hoveredPlanet);
     if(planet) {
         planet.glow.material.opacity = 0.4;
         planet.glow.scale.set(1.1, 1.1, 1.1);
@@ -339,8 +343,8 @@ function showTooltip(name) {
   const tooltip = document.getElementById('planet-tooltip');
   const tooltipName = document.getElementById('tooltip-name');
   tooltipName.textContent = name;
-  tooltip.style.left = `${mouse.x * 50 + 50}%`;
-  tooltip.style.top = `${-mouse.y * 50 + 50}%`;
+  tooltip.style.left = `${state.mouse.x * 50 + 50}%`;
+  tooltip.style.top = `${-state.mouse.y * 50 + 50}%`;
   tooltip.classList.add('visible');
 }
 
@@ -373,12 +377,12 @@ function hideConnectionLine() {
   line.classList.remove('visible');
 }
 
-function updateConnectionLine() {
-  if (!selectedPlanet) return;
+export function updateConnectionLine() {
+  if (!state.selectedPlanet) return;
 
   const vector = new THREE.Vector3();
-  vector.copy(selectedPlanet.mesh.position);
-  vector.project(threeCamera);
+  vector.copy(state.selectedPlanet.mesh.position);
+  vector.project(state.threeCamera);
 
   const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
   const y = (-(vector.y) * 0.5 + 0.5) * window.innerHeight;
@@ -395,7 +399,7 @@ function updateConnectionLine() {
 
 function goToUniverse(universeId) {
   console.log(`🌍 Loading ${universeId} universe...`);
-  currentScreen = 'content';
+  state.currentScreen = 'content';
 
   const universeScreen = document.getElementById('universe-screen');
   universeScreen.classList.remove('active');

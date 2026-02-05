@@ -1,4 +1,6 @@
-function initUniverseContent(universeId) {
+import { state } from './config.js';
+
+export async function initUniverseContent(universeId) {
   const universeContent = document.getElementById('universe-content');
   universeContent.innerHTML = '';
 
@@ -11,39 +13,48 @@ function initUniverseContent(universeId) {
   createProjectModal();
 
   switch(universeId) {
-    case 'dev':
+    case 'dev': {
+      const { initDevWorld } = await import('./universe-dev.js');
       initDevWorld(universeContent);
       break;
-    case 'design':
+    }
+    case 'design': {
+      const { initDesignPlanet } = await import('./universe-design.js');
       initDesignPlanet(universeContent);
       break;
-    case 'arts':
+    }
+    case 'arts': {
+      const { initArtsStation } = await import('./universe-arts.js');
       initArtsStation(universeContent);
       break;
-    case 'game':
+    }
+    case 'game': {
+      const { initGameEarth } = await import('./universe-game.js');
       initGameEarth(universeContent);
       break;
+    }
   }
 }
 
-function exitUniverseContent() {
-  currentScreen = 'universe';
+export async function exitUniverseContent() {
+  state.currentScreen = 'universe';
 
-  if (universeAnimationId) {
-    cancelAnimationFrame(universeAnimationId);
-    universeAnimationId = null;
+  if (state.universeAnimationId) {
+    cancelAnimationFrame(state.universeAnimationId);
+    state.universeAnimationId = null;
   }
 
   const universeContent = document.getElementById('universe-content');
   universeContent.style.opacity = '0';
 
-  setTimeout(() => {
+  setTimeout(async () => {
     universeContent.style.display = 'none';
     universeContent.innerHTML = '';
 
     const universeScreen = document.getElementById('universe-screen');
     universeScreen.classList.add('active');
 
+    const { deselectPlanet } = await import('./ui-handlers.js');
     deselectPlanet();
   }, 500);
 }
@@ -89,7 +100,7 @@ function createProjectModal() {
   modal.querySelector('.modal-content').addEventListener('click', (e) => e.stopPropagation());
 }
 
-function openProjectModal(project, color, { onOpen } = {}) {
+export function openProjectModal(project, color, { onOpen } = {}) {
   const modal = document.getElementById('project-modal');
   if (!modal) return;
 
@@ -140,7 +151,7 @@ function closeProjectModal() {
   }
 }
 
-function initPlaceholderUniverse(container, title, message) {
+export function initPlaceholderUniverse(container, title, message) {
   const placeholderContainer = document.createElement('div');
   placeholderContainer.className = 'placeholder-container';
   placeholderContainer.innerHTML = `

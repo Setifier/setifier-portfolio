@@ -1,52 +1,56 @@
-function initThreeScene() {
+import { state, universesData } from './config.js';
+import { createAdvancedPlanetTextures } from './texture-generator.js';
+import { onMouseMove, onPlanetClick, onPlanetHover, onPlanetLeave, updateConnectionLine } from './ui-handlers.js';
+
+export function initThreeScene() {
   console.log('🌌 Initializing 3D Universe Scene...');
 
   const canvas = document.getElementById('three-canvas');
 
   // Scene setup
-  threeScene = new THREE.Scene();
-  threeScene.background = new THREE.Color(0x000000);
+  state.threeScene = new THREE.Scene();
+  state.threeScene.background = new THREE.Color(0x000000);
 
   // Camera setup
-  threeCamera = new THREE.PerspectiveCamera(
+  state.threeCamera = new THREE.PerspectiveCamera(
     75, // Field of view
     window.innerWidth / window.innerHeight, // Aspect ratio
     0.1, // Near clipping plane
     1000 // Far clipping plane
   );
-  threeCamera.position.z = 50;
+  state.threeCamera.position.z = 50;
 
   // Renderer setup
-  threeRenderer = new THREE.WebGLRenderer({
+  state.threeRenderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: true,
     alpha: true
   });
-  threeRenderer.setSize(window.innerWidth, window.innerHeight);
-  threeRenderer.setPixelRatio(window.devicePixelRatio);
+  state.threeRenderer.setSize(window.innerWidth, window.innerHeight);
+  state.threeRenderer.setPixelRatio(window.devicePixelRatio);
 
   createStarfield();
   createPlanets();
 
   // Lights
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-  threeScene.add(ambientLight);
+  state.threeScene.add(ambientLight);
 
   const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
   mainLight.position.set(10, 10, 10);
-  threeScene.add(mainLight);
+  state.threeScene.add(mainLight);
 
   const fillLight = new THREE.DirectionalLight(0x4488ff, 0.6);
   fillLight.position.set(-10, -10, 5);
-  threeScene.add(fillLight);
+  state.threeScene.add(fillLight);
 
   const rimLight = new THREE.DirectionalLight(0xff8844, 0.4);
   rimLight.position.set(0, -10, -10);
-  threeScene.add(rimLight);
+  state.threeScene.add(rimLight);
 
   // Initialize raycaster for interactions
-  raycaster = new THREE.Raycaster();
-  mouse = new THREE.Vector2();
+  state.raycaster = new THREE.Raycaster();
+  state.mouse = new THREE.Vector2();
 
   canvas.addEventListener('mousemove', onMouseMove, false);
   canvas.addEventListener('click', onPlanetClick, false);
@@ -102,7 +106,7 @@ function createStarfield() {
     });
 
     const stars = new THREE.Points(starGeometry, starMaterial);
-    threeScene.add(stars);
+    state.threeScene.add(stars);
   });
 }
 
@@ -140,7 +144,7 @@ function createPlanets() {
       rotationSpeed: Math.random() * 0.002 + 0.001
     };
 
-    threeScene.add(planetMesh);
+    state.threeScene.add(planetMesh);
 
     const glowGeometry = new THREE.SphereGeometry(planetSize + 0.5, 64, 64);
     const glowMaterial = new THREE.MeshBasicMaterial({
@@ -151,11 +155,11 @@ function createPlanets() {
     });
     const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
     glowMesh.position.copy(planetMesh.position);
-    threeScene.add(glowMesh);
+    state.threeScene.add(glowMesh);
 
     const planetLight = new THREE.PointLight(universeData.glowColor, 0.8, 30);
     planetLight.position.copy(planetMesh.position);
-    threeScene.add(planetLight);
+    state.threeScene.add(planetLight);
 
     let ring = null;
     let satellite = null;
@@ -175,7 +179,7 @@ function createPlanets() {
       ring = new THREE.Mesh(ringGeometry, ringMaterial);
       ring.position.copy(planetMesh.position);
       ring.rotation.x = Math.PI / 2.5;
-      threeScene.add(ring);
+      state.threeScene.add(ring);
     }
 
     if (universeData.id === 'game') {
@@ -186,7 +190,7 @@ function createPlanets() {
       const orbit1Radius = planetSize + 3.5;
       satellite1.position.set(planetMesh.position.x + orbit1Radius, planetMesh.position.y, planetMesh.position.z);
       satellite1.userData = { orbitRadius: orbit1Radius, orbitSpeed: 0.006, orbitAngle: 0, orbitTilt: 0.2, planetPos: planetMesh.position };
-      threeScene.add(satellite1);
+      state.threeScene.add(satellite1);
       satellites.push(satellite1);
 
       const sat2Geometry = new THREE.SphereGeometry(0.5, 16, 16);
@@ -195,15 +199,15 @@ function createPlanets() {
       const orbit2Radius = planetSize + 5.5;
       satellite2.position.set(planetMesh.position.x - orbit2Radius, planetMesh.position.y, planetMesh.position.z);
       satellite2.userData = { orbitRadius: orbit2Radius, orbitSpeed: 0.004, orbitAngle: Math.PI, orbitTilt: -0.3, planetPos: planetMesh.position };
-      threeScene.add(satellite2);
+      state.threeScene.add(satellite2);
       satellites.push(satellite2);
       satellite = satellites;
     }
 
-    planets.push({ mesh: planetMesh, glow: glowMesh, light: planetLight, ring: ring, satellite: satellite, data: universeData });
+    state.planets.push({ mesh: planetMesh, glow: glowMesh, light: planetLight, ring: ring, satellite: satellite, data: universeData });
   });
 
-  console.log(`✅ ${planets.length} planets created!`);
+  console.log(`✅ ${state.planets.length} planets created!`);
 }
 
 let cameraTargetPos = new THREE.Vector3(0, 0, 50);
@@ -212,7 +216,7 @@ function animate() {
   requestAnimationFrame(animate);
 
   // Star rotation
-  threeScene.children.forEach((child) => {
+  state.threeScene.children.forEach((child) => {
     if (child instanceof THREE.Points) {
       child.rotation.y += 0.00006;
       child.rotation.x += 0.00002;
@@ -220,7 +224,7 @@ function animate() {
   });
 
   // Planet animation
-  planets.forEach((planet) => {
+  state.planets.forEach((planet) => {
     planet.mesh.rotation.y += planet.mesh.userData.rotationSpeed;
     planet.glow.rotation.y += planet.mesh.userData.rotationSpeed;
 
@@ -250,43 +254,43 @@ function animate() {
   });
 
   // Hover detection
-  if (raycaster && mouse && currentScreen === 'universe') {
-    raycaster.setFromCamera(mouse, threeCamera);
-    const planetMeshes = planets.map(p => p.mesh);
-    const intersects = raycaster.intersectObjects(planetMeshes);
+  if (state.raycaster && state.mouse && state.currentScreen === 'universe') {
+    state.raycaster.setFromCamera(state.mouse, state.threeCamera);
+    const planetMeshes = state.planets.map(p => p.mesh);
+    const intersects = state.raycaster.intersectObjects(planetMeshes);
 
     if (intersects.length > 0) {
       const newHoveredPlanet = intersects[0].object;
-      if (hoveredPlanet !== newHoveredPlanet) {
+      if (state.hoveredPlanet !== newHoveredPlanet) {
         onPlanetHover(newHoveredPlanet);
       }
-    } else if (hoveredPlanet) {
+    } else if (state.hoveredPlanet) {
       onPlanetLeave();
     }
   }
 
   updateCamera();
-  if (selectedPlanet) {
+  if (state.selectedPlanet) {
     updateConnectionLine();
   }
 
-  if (threeRenderer && threeScene && threeCamera) {
-    threeRenderer.render(threeScene, threeCamera);
+  if (state.threeRenderer && state.threeScene && state.threeCamera) {
+    state.threeRenderer.render(state.threeScene, state.threeCamera);
   }
 }
 
 function onWindowResize() {
-  if (threeCamera && threeRenderer) {
-    threeCamera.aspect = window.innerWidth / window.innerHeight;
-    threeCamera.updateProjectionMatrix();
-    threeRenderer.setSize(window.innerWidth, window.innerHeight);
+  if (state.threeCamera && state.threeRenderer) {
+    state.threeCamera.aspect = window.innerWidth / window.innerHeight;
+    state.threeCamera.updateProjectionMatrix();
+    state.threeRenderer.setSize(window.innerWidth, window.innerHeight);
   }
 }
 
-function animateCamera(targetPos) {
+export function animateCamera(targetPos) {
   cameraTargetPos.copy(targetPos);
 }
 
 function updateCamera() {
-  threeCamera.position.lerp(cameraTargetPos, 0.05);
+  state.threeCamera.position.lerp(cameraTargetPos, 0.05);
 }

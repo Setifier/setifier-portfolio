@@ -1,16 +1,26 @@
-let currentScreen = 'welcome';
-let threeScene, threeCamera, threeRenderer;
-let planets = [];
-let raycaster, mouse;
-let hoveredPlanet = null;
-let selectedPlanet = null;
+export const state = {
+  currentScreen: 'welcome',
+  planets: [],
+  hoveredPlanet: null,
+  selectedPlanet: null,
 
-let universeScene, universeCamera, universeRenderer, universeAnimationId;
-let projectCubes = [];
+  // These will be initialized by their respective modules
+  threeScene: null,
+  threeCamera: null,
+  threeRenderer: null,
+  raycaster: null,
+  mouse: null,
 
-const exploredProjects = new Set();
+  universeScene: null,
+  universeCamera: null,
+  universeRenderer: null,
+  universeAnimationId: null,
+  projectCubes: [],
 
-const universesData = [
+  exploredProjects: new Set(),
+};
+
+export const universesData = [
   {
     id: 'dev',
     name: 'DEV WORLD',
@@ -19,7 +29,7 @@ const universesData = [
     color: 0x86cabf,
     glowColor: 0x86cabf,
     emissive: 0x003344,
-    size: 5
+    size: 5,
   },
   {
     id: 'design',
@@ -29,7 +39,7 @@ const universesData = [
     color: 0xc180a1,
     glowColor: 0xc180a1,
     emissive: 0x330022,
-    size: 6.5
+    size: 6.5,
   },
   {
     id: 'arts',
@@ -39,7 +49,7 @@ const universesData = [
     color: 0x8dbdc5,
     glowColor: 0x8dbdc5,
     emissive: 0x442211,
-    size: 5
+    size: 5,
   },
   {
     id: 'game',
@@ -49,6 +59,6 @@ const universesData = [
     color: 0xb084b1,
     glowColor: 0xb084b1,
     emissive: 0x220044,
-    size: 5
-  }
+    size: 5,
+  },
 ];

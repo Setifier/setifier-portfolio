@@ -1,4 +1,6 @@
-function initDevWorld(container) {
+import { openProjectModal } from "./universe-content.js";
+
+export function initDevWorld(container) {
   console.log('💻 Initializing DEV WORLD - Clean Interface...');
 
   const devWorldContainer = document.createElement('div');

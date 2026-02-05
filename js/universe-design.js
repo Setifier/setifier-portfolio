@@ -1,4 +1,6 @@
-async function initDesignPlanet(container) {
+import { openProjectModal, initPlaceholderUniverse } from './universe-content.js';
+
+export async function initDesignPlanet(container) {
   console.log('🎨 Initializing DESIGN PLANET - Visual Gallery...');
 
   const designPlanetContainer = document.createElement('div');
