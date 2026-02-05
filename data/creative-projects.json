@@ -1,55 +1,51 @@
 {
+  "id": "creative-projects",
+  "title": "Creative Projects",
   "projects": [
     {
-      "id": "creative-projects",
-      "title": "Creative Projects",
-      "projects": [
-        {
-          "id": "wolfBrain-Academy",
-          "title": "Wolf Brain Academy",
-          "description": "",
-          "link": "",
-          "thumbnail": "assets/wolfBrainAcademy_thumb.png",
-          "image": "assets/wolfBrainAcademy.png",
-          "technologies": ["Illustrator", "Photoshop", "Unity"]
-        },
-        {
-          "id": "traera",
-          "title": "Traera",
-          "description": "",
-          "link": "",
-          "thumbnail": "assets/traera_thumb.png",
-          "image": "assets/traera.png",
-          "technologies": ["Illustrator", "Photoshop"]
-        },
-        {
-          "id": "selia",
-          "title": "Selia, la fée sans ailes",
-          "description": "",
-          "link": "",
-          "thumbnail": "assets/selia_thumb.png",
-          "image": "assets/selia.png",
-          "technologies": ["Illustrator", "Photoshop"]
-        },
-        {
-          "id": "hitokiri",
-          "title": "Hitokiri",
-          "description": "",
-          "link": "",
-          "thumbnail": "assets/hitokiri_thumb.png",
-          "image": "assets/hitokiri.png",
-          "technologies": ["Illustrator", "Photoshop"]
-        },
-        {
-          "id": "ronni-marmelade",
-          "title": "Ronni & Marmelade",
-          "description": "",
-          "link": "",
-          "thumbnail": "assets/ronni-marmelade_thumb.png",
-          "image": "assets/ronni-marmelade.png",
-          "technologies": ["Illustrator", "After Effects"]
-        }
-      ]
+      "id": "wolfBrain-Academy",
+      "title": "Wolf Brain Academy",
+      "description": "",
+      "link": "",
+      "thumbnail": "assets/wolfBrainAcademy_thumb.png",
+      "image": "assets/wolfBrainAcademy.png",
+      "technologies": ["Illustrator", "Photoshop", "Unity"]
+    },
+    {
+      "id": "traera",
+      "title": "Traera",
+      "description": "",
+      "link": "",
+      "thumbnail": "assets/traera_thumb.png",
+      "image": "assets/traera.png",
+      "technologies": ["Illustrator", "Photoshop"]
+    },
+    {
+      "id": "selia",
+      "title": "Selia, la fee sans ailes",
+      "description": "",
+      "link": "",
+      "thumbnail": "assets/selia_thumb.png",
+      "image": "assets/selia.png",
+      "technologies": ["Illustrator", "Photoshop"]
+    },
+    {
+      "id": "hitokiri",
+      "title": "Hitokiri",
+      "description": "",
+      "link": "",
+      "thumbnail": "assets/hitokiri_thumb.png",
+      "image": "assets/hitokiri.png",
+      "technologies": ["Illustrator", "Photoshop"]
+    },
+    {
+      "id": "ronni-marmelade",
+      "title": "Ronni & Marmelade",
+      "description": "",
+      "link": "",
+      "thumbnail": "assets/ronni-marmelade_thumb.png",
+      "image": "assets/ronni-marmelade.png",
+      "technologies": ["Illustrator", "After Effects"]
     }
   ]
 }

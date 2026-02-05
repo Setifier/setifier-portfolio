@@ -1,5 +1,5 @@
-import { initPlaceholderUniverse } from "./universe-content.js";
+import { initPlaceholderUniverse } from './universe-content.js';
 
 export function initArtsStation(container) {
-  initPlaceholderUniverse(container, 'ARTS STATION', '🖌️ Arts projects coming soon...');
+  initPlaceholderUniverse(container, 'ARTS STATION', 'Arts projects coming soon...');
 }

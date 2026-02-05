@@ -1,19 +1,15 @@
 {
+  "id": "illustrations",
+  "title": "Illustrations & Art",
   "projects": [
     {
-      "id": "illustrations",
-      "title": "Illustrations & Art",
-      "projects": [
-        {
-          "id": "cartoon-basket",
-          "title": "Cartoon Basket",
-          "description": "",
-          "link": "",
-          "thumbnail": "assets/cartoon-basket_thumb.png",
-          "image": "assets/cartoon-basket.png",
-          "technologies": ["Illustrator", "Photoshop"]
-        }
-      ]
+      "id": "cartoon-basket",
+      "title": "Cartoon Basket",
+      "description": "",
+      "link": "",
+      "thumbnail": "assets/cartoon-basket_thumb.png",
+      "image": "assets/cartoon-basket.png",
+      "technologies": ["Illustrator", "Photoshop"]
     }
   ]
 }
