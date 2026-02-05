@@ -1,18 +1,57 @@
-# Setifier Portfolio
+# Slim Portfolio
 
-This repository contains the source code for my creative portfolio, a game-like experience to showcase my projects.
+A game-styled creative portfolio built with vanilla JavaScript and Three.js. Each planet represents a different skill universe (development, design, art, games).
 
-## Overview
+## Tech stack
 
-This is a vanilla JavaScript project that uses Three.js for the 3D planet selection screen and custom CSS for the UI. The portfolio is designed to be an interactive and engaging way to explore my work in web development, design, and art.
+- **Vanilla JS** (ES modules, no bundler)
+- **Three.js** (r128) for 3D planet selection
+- **Procedural textures** via Canvas API
+- **CSS custom properties** for theming
 
-## Features
+## Running locally
 
--   **3D Universe Selection:** A Three.js-powered main screen where each planet represents a different skill universe.
--   **Dynamic Content Loading:** Project data is loaded from JSON files, making it easy to update and manage.
--   **Custom Procedural Textures:** Planet textures are generated procedurally using the HTML5 Canvas API.
--   **Interactive UI:** The interface is built with custom CSS and JavaScript to create a game-like feel.
+Open `index.html` in any modern browser. No build step required.
 
-## Running Locally
+For local development with hot-reload you can use any static server:
 
-To run this project, simply open the `index.html` file in your web browser. There is no build step required.
+```bash
+npx serve .
+```
+
+## File structure
+
+```
+js/
+  main.js               Entry point
+  constants.js          All magic numbers, colors, config
+  events.js             Pub/sub event bus
+  state.js              Reactive store
+  screen-transitions.js Screen navigation
+  planet-interaction.js Planet hover/select/deselect
+  three-scene.js        3D scene, animation loop
+  tips.js               Rotating tip messages
+  welcome-effects.js    Welcome screen stars
+  texture-generator.js  Procedural planet textures
+  universe-content.js   Universe loader + project modal
+  universe-dev.js       Dev world project cards
+  universe-design.js    Design planet carousel
+  universe-arts.js      Arts placeholder
+  universe-game.js      Game placeholder
+data/                   Project data (flat JSON)
+doc/architecture.md     Module graph and patterns
+styles.css              Main styles with CSS variables
+universe_styles.css     Universe-specific styles
+```
+
+See [doc/architecture.md](doc/architecture.md) for the full dependency graph and how to add content.
+
+## Adding a project
+
+1. Add the project object to the matching JSON file in `data/`
+2. Place images under `assets/images/<category>/`
+3. The project appears automatically on next load
+
+## Adding a universe
+
+See the step-by-step guide in [doc/architecture.md](doc/architecture.md#how-to-add-a-universe).
