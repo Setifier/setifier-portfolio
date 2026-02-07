@@ -4,8 +4,9 @@
   "projects": [
     {
       "id": "karate",
+      "category": "client",
       "title": "E.S. Hagondange Karate",
-      "description": "",
+      "description": "Logo design for the Hagondange karate club.",
       "link": "",
       "thumbnail": "assets/images/brand-projects/karate/logo_ESH_Karaté.png",
       "image": "assets/images/brand-projects/karate/logo_ESH_Karaté.png",
@@ -13,8 +14,9 @@
     },
     {
       "id": "comite",
+      "category": "client",
       "title": "Comite Departemental de Moselle de Rugby",
-      "description": "",
+      "description": "Visual identity for the Moselle rugby committee.",
       "link": "",
       "thumbnail": "assets/images/brand-projects/comite/logo_cd57_rugby.png",
       "image": "assets/images/brand-projects/comite/logo_cd57_rugby.png",
@@ -22,6 +24,7 @@
     },
     {
       "id": "supernova",
+      "category": "client",
       "title": "Supernova Music",
       "description": "Urban music label. Logo and visual identity creation, in collaboration with the Supernova Music founder.",
       "link": "",
@@ -30,12 +33,13 @@
       "technologies": ["Illustrator"]
     },
     {
-      "id": "fench-touch",
-      "title": "The Fench Touch",
-      "description": "",
+      "id": "french-touch",
+      "category": "client",
+      "title": "The French Touch",
+      "description": "Logo and branding for The French Touch.",
       "link": "",
-      "thumbnail": "assets/images/brand-projects/fench-touch/french_touch_vector.png",
-      "image": "assets/images/brand-projects/fench-touch/french_touch_vector.png",
+      "thumbnail": "assets/images/brand-projects/french-touch/french_touch_vector.png",
+      "image": "assets/images/brand-projects/french-touch/french_touch_vector.png",
       "technologies": ["Illustrator"]
     }
   ]

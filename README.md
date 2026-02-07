@@ -1,57 +1,59 @@
 # Slim Portfolio
 
-A game-styled creative portfolio built with vanilla JavaScript and Three.js. Each planet represents a different skill universe (development, design, art, games).
+My personal portfolio, built as a game. Instead of a classic scrolling page, you land on a game menu, hit "New Game", and navigate a 3D space scene where each planet is a different area of my work.
 
-## Tech stack
+## The idea
 
-- **Vanilla JS** (ES modules, no bundler)
-- **Three.js** (r128) for 3D planet selection
-- **Procedural textures** via Canvas API
-- **CSS custom properties** for theming
+I wanted something that actually reflects who I am - I love games, I love building stuff, and I wanted recruiters/visitors to **explore** my work rather than just scroll past it. So I turned the whole thing into an interactive experience with Three.js.
 
-## Running locally
+Each planet has its own procedurally generated textures (hexagonal tech patterns for Dev, paint strokes for Arts, pixel blocks for Game...) and leads to a dedicated section showcasing related projects.
 
-Open `index.html` in any modern browser. No build step required.
+## What's under the hood
 
-For local development with hot-reload you can use any static server:
+- **Vanilla JavaScript** with ES modules - no React, no framework, no bundler. Just the browser.
+- **Three.js** for the 3D planet scene (raycasting, camera lerp, animated starfield)
+- **Procedural PBR textures** generated at runtime with Canvas API (color maps, normal maps, roughness maps)
+- **Custom event bus** and **reactive state store** to keep modules decoupled
+- **Lazy-loaded universes** - each planet's content only loads when you enter it
+- **CSS custom properties** for consistent theming across the whole thing
+- **Data-driven content** - projects are stored in JSON files, the UI builds itself from that
+
+## Architecture
+
+The project went through a full refactoring from a single-file mess to a clean modular setup. The git history tells that story across 9 phases.
+
+```
+js/
+  main.js               → Bootstrap
+  constants.js          → Config, colors, magic numbers
+  events.js             → Pub/sub event bus
+  state.js              → Centralized reactive store
+  screen-transitions.js → Screen navigation logic
+  planet-interaction.js → Hover, click, select planets
+  three-scene.js        → 3D scene setup + render loop
+  texture-generator.js  → Procedural PBR texture generation
+  universe-content.js   → Universe loader + project modal
+  universe-dev.js       → Dev world (project cards)
+  universe-design.js    → Design planet (showcase grid)
+  tips.js               → Rotating tip messages
+  welcome-effects.js    → Welcome screen star particles
+data/                   → Project data as flat JSON
+```
+
+More details in [doc/architecture.md](doc/architecture.md) (dependency graph, patterns used, how to extend).
+
+## Run it
+
+No install, no build. Just serve the files:
 
 ```bash
 npx serve .
 ```
 
-## File structure
+Or open `index.html` directly in a browser.
 
-```
-js/
-  main.js               Entry point
-  constants.js          All magic numbers, colors, config
-  events.js             Pub/sub event bus
-  state.js              Reactive store
-  screen-transitions.js Screen navigation
-  planet-interaction.js Planet hover/select/deselect
-  three-scene.js        3D scene, animation loop
-  tips.js               Rotating tip messages
-  welcome-effects.js    Welcome screen stars
-  texture-generator.js  Procedural planet textures
-  universe-content.js   Universe loader + project modal
-  universe-dev.js       Dev world project cards
-  universe-design.js    Design planet carousel
-  universe-arts.js      Arts placeholder
-  universe-game.js      Game placeholder
-data/                   Project data (flat JSON)
-doc/architecture.md     Module graph and patterns
-styles.css              Main styles with CSS variables
-universe_styles.css     Universe-specific styles
-```
+## Add a project
 
-See [doc/architecture.md](doc/architecture.md) for the full dependency graph and how to add content.
-
-## Adding a project
-
-1. Add the project object to the matching JSON file in `data/`
-2. Place images under `assets/images/<category>/`
-3. The project appears automatically on next load
-
-## Adding a universe
-
-See the step-by-step guide in [doc/architecture.md](doc/architecture.md#how-to-add-a-universe).
+1. Drop a JSON object into the right file under `data/`
+2. Put images in `assets/images/<category>/`
+3. Done - shows up on next load

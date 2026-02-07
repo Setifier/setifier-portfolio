@@ -23,7 +23,7 @@
     {
       "id": "shinydex",
       "title": "Shinydex",
-      "description": "A project about a shiny new technology.",
+      "description": "A shiny hunting tracker and Pokedex companion app.",
       "link": "https://shinydex.example.com",
       "thumbnail": "assets/images/web-projects/shinydex/logo.webp",
       "image": "assets/images/web-projects/shinydex/logo.webp",
@@ -32,8 +32,8 @@
     {
       "id": "portfolio",
       "title": "My Portfolio",
-      "description": "A showcase of my work and projects.",
-      "link": "You are in the right place!",
+      "description": "The game-styled portfolio you're exploring right now.",
+      "link": "",
       "thumbnail": "assets/logo.png",
       "image": "assets/logo.png",
       "technologies": ["HTML", "CSS", "JavaScript"]

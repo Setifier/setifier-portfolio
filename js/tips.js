@@ -55,8 +55,8 @@ function startTipRotation(elementId, tipsArray, type) {
       tipText.textContent = tipsArray[currentTip];
       container.classList.remove('fade-out');
       container.classList.add('fade-in');
-    }, TIPS.fadeDelay);
-  }, TIPS.rotationInterval);
+    }, TIPS.fadeDuration);
+  }, TIPS.rotationInterval + TIPS.fadeDuration * 2);
 
   if (type === 'home') State.set('homeTipInterval', interval);
   if (type === 'universe') State.set('universeTipInterval', interval);

@@ -65,7 +65,7 @@ export const UNIVERSE_TIPS = [
 
 export const TIPS = {
   rotationInterval: 10_000,
-  fadeDelay: 2_000,
+  fadeDuration: 2_000,
   fadeInDelay: 50,
 };
 

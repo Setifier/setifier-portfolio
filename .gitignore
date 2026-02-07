@@ -1,5 +1,6 @@
 # Windows Zone Identifier files
 *:Zone.Identifier
+*.Identifier
 
 # OS generated files
 .DS_Store

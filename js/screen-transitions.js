@@ -15,14 +15,12 @@ export function initWelcomeScreen() {
 
   if (newGameBtn) {
     newGameBtn.addEventListener('click', () => {
-      console.log('Starting Game...');
       transitionToUniverseScreen();
     });
   }
 
   if (optionsBtn) {
     optionsBtn.addEventListener('click', () => {
-      console.log('Options clicked...');
       transitionToOptionsScreen();
     });
   }

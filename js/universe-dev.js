@@ -2,11 +2,8 @@ import { openProjectModal } from './universe-content.js';
 import { COLORS } from './constants.js';
 
 export function initDevWorld(container) {
-  console.log('Initializing DEV WORLD...');
-
   const devWorldContainer = document.createElement('div');
   devWorldContainer.className = 'dev-world-container';
-  // Safe: static HTML structure
   devWorldContainer.innerHTML = `
     <div class="dev-world-background"></div>
     <div class="dev-world-content">
@@ -53,7 +50,6 @@ function createProjectCards(projectsData, containerId) {
     card.style.animationDelay = `${index * 0.1}s`;
     card.style.setProperty('--card-color', color);
     const logoSrc = project.thumbnail || project.image || 'assets/logo.png';
-    // Safe: data from local JSON we control
     card.innerHTML = `
       <div class="project-card-banner" style="border-color: ${color};"><img src="${logoSrc}" alt="${project.title}" class="project-card-logo"></div>
       <div class="project-card-body">

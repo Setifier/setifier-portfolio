@@ -1,9 +1,33 @@
 import { openProjectModal, initPlaceholderUniverse } from './universe-content.js';
 import { COLORS } from './constants.js';
 
-export async function initDesignPlanet(container) {
-  console.log('Initializing DESIGN PLANET...');
+function renderCards(projects, startIndex) {
+  return projects.map((project, i) => `
+    <div class="design-card" data-id="${project.id}" style="animation-delay: ${(startIndex + i) * 0.12}s">
+      <div class="design-card-image">
+        <img src="${project.image}" alt="${project.title}">
+      </div>
+      <div class="design-card-title">${project.title}</div>
+    </div>
+  `).join('');
+}
 
+function renderSection(title, projects, startIndex) {
+  if (!projects.length) {
+    return `
+      <h2 class="design-section-title">${title}</h2>
+      <div class="design-section-placeholder">Coming soon...</div>
+    `;
+  }
+  return `
+    <h2 class="design-section-title">${title}</h2>
+    <div class="design-showcase">
+      ${renderCards(projects, startIndex)}
+    </div>
+  `;
+}
+
+export async function initDesignPlanet(container) {
   const designPlanetContainer = document.createElement('div');
   designPlanetContainer.className = 'design-planet-container';
 
@@ -19,59 +43,24 @@ export async function initDesignPlanet(container) {
     return;
   }
 
-  // Safe: data from local JSON we control
+  const clientProjects = projectsData.filter(p => p.category === 'client');
+  const personalProjects = projectsData.filter(p => p.category === 'personal');
+
   designPlanetContainer.innerHTML = `
     <div class="design-planet-background"></div>
     <div class="design-planet-content">
       <h1 class="design-planet-title">BRAND & LOGO DESIGN</h1>
-      <div class="design-gallery">
-        <div class="gallery-track">
-          ${projectsData.map(project => `
-            <div class="gallery-slide" data-id="${project.id}">
-              <div class="slide-image-container">
-                <img src="${project.image}" alt="${project.title}">
-              </div>
-              <div class="slide-content">
-                <h2 class="slide-title">${project.title}</h2>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-        <div class="gallery-nav">
-          <button class="nav-arrow prev">&larr;</button>
-          <button class="nav-arrow next">&rarr;</button>
-        </div>
-      </div>
+      ${renderSection('Clients', clientProjects, 0)}
+      ${renderSection('Personal Projects', personalProjects, clientProjects.length)}
     </div>
   `;
   container.appendChild(designPlanetContainer);
 
-  const track = designPlanetContainer.querySelector('.gallery-track');
-  const slides = Array.from(track.children);
-  const nextButton = designPlanetContainer.querySelector('.nav-arrow.next');
-  const prevButton = designPlanetContainer.querySelector('.nav-arrow.prev');
-
-  let currentIndex = 0;
-
-  // Recalculate on resize so the carousel stays aligned
-  const getSlideWidth = () => slides[0].getBoundingClientRect().width;
-
-  const moveToSlide = (targetIndex) => {
-    track.style.transform = `translateX(-${getSlideWidth() * targetIndex}px)`;
-    currentIndex = targetIndex;
-  };
-
-  nextButton.addEventListener('click', () => {
-    moveToSlide((currentIndex + 1) % slides.length);
-  });
-
-  prevButton.addEventListener('click', () => {
-    moveToSlide((currentIndex - 1 + slides.length) % slides.length);
-  });
-
-  slides.forEach((slide, index) => {
-    slide.addEventListener('click', () => {
-      openProjectModal(projectsData[index], COLORS.designAccent);
+  const cards = designPlanetContainer.querySelectorAll('.design-card');
+  cards.forEach(card => {
+    const project = projectsData.find(p => p.id === card.dataset.id);
+    card.addEventListener('click', () => {
+      openProjectModal(project, COLORS.designAccent);
     });
   });
 }

@@ -53,7 +53,6 @@ function onPlanetClick() {
   const hoveredPlanet = State.get('hoveredPlanet');
   if (hoveredPlanet) {
     const universeId = hoveredPlanet.userData.id;
-    console.log(`Selecting ${universeId} planet...`);
     selectPlanet(universeId);
   } else {
     const modal = document.getElementById('selection-modal');
@@ -152,7 +151,6 @@ export function updateConnectionLine() {
 }
 
 export function goToUniverse(universeId) {
-  console.log(`Loading ${universeId} universe...`);
   State.set('currentScreen', 'content');
 
   const universeScreen = document.getElementById('universe-screen');

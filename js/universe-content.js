@@ -66,7 +66,6 @@ function createProjectModal() {
   const modal = document.createElement('div');
   modal.id = 'project-modal';
   modal.className = 'project-modal';
-  // Safe: static markup, no user-supplied data
   modal.innerHTML = `
     <div class="modal-overlay"></div>
     <div class="modal-content">
@@ -123,7 +122,6 @@ export function openProjectModal(project, color, { onOpen } = {}) {
   const allTechs = project.allTechnologies || project.technologies || [];
   if (allTechs.length > 0) {
     techList.parentElement.style.display = 'block';
-    // Safe: tech names come from local JSON we control
     techList.innerHTML = allTechs.map(tech =>
       `<span class="modal-tech-badge" style="border-color: ${color}; color: ${color};">${tech}</span>`
     ).join('');
@@ -157,7 +155,6 @@ function closeProjectModal() {
 export function initPlaceholderUniverse(container, title, message) {
   const placeholderContainer = document.createElement('div');
   placeholderContainer.className = 'placeholder-container';
-  // Safe: title/message are hardcoded strings from our own code
   placeholderContainer.innerHTML = `
     <h1 class="placeholder-title">${title}</h1>
     <p class="placeholder-message">${message}</p>

@@ -13,8 +13,6 @@ let cameraTargetPos = new THREE.Vector3(0, 0, SCENE.defaultCameraZ);
 let resizeController = null;
 
 function initThreeScene() {
-  console.log('Initializing 3D Universe Scene...');
-
   const canvas = document.getElementById('three-canvas');
 
   State.set('threeScene', new THREE.Scene());
@@ -64,7 +62,6 @@ function initThreeScene() {
   window.addEventListener('resize', onWindowResize, { signal: resizeController.signal });
 
   animate();
-  console.log('3D Scene Ready');
 }
 
 function createStarfield() {
@@ -111,7 +108,6 @@ function createStarfield() {
 }
 
 function createPlanets() {
-  console.log('Creating planets...');
   const scene = State.get('threeScene');
 
   UNIVERSES.forEach((universeData) => {
@@ -219,7 +215,6 @@ function createPlanets() {
     });
   });
 
-  console.log(`${State.get('planets').length} planets created`);
 }
 
 function animate() {
