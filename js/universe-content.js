@@ -113,7 +113,21 @@ export function openProjectModal(project, color, { onOpen } = {}) {
   const description = project.description || 'No description available for this project.';
   const fullDescription = project.fullDescription || description;
 
-  modal.querySelector('.modal-image').src = imagePath;
+  modal.classList.remove('landscape-logo');
+  const modalImage = modal.querySelector('.modal-image');
+  modalImage.src = imagePath;
+
+  const detectOrientation = () => {
+    if (modalImage.naturalWidth > modalImage.naturalHeight * 1.3) {
+      modal.classList.add('landscape-logo');
+    }
+  };
+  if (modalImage.complete && modalImage.naturalWidth) {
+    detectOrientation();
+  } else {
+    modalImage.addEventListener('load', detectOrientation, { once: true });
+  }
+
   modal.querySelector('.modal-title').textContent = project.title;
   modal.querySelector('.modal-short-desc').textContent = description;
   modal.querySelector('.modal-full-desc').textContent = fullDescription;

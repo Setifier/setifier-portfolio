@@ -95,8 +95,8 @@
 }
 
 .modal-image {
-  width: 100px;
-  height: 100px;
+  width: 130px;
+  height: 130px;
   object-fit: contain;
   border-radius: 16px;
   background:
@@ -113,6 +113,20 @@
 
 .modal-header-text {
   flex: 1;
+}
+
+/* Landscape logo: image above title, rectangular frame */
+.project-modal.landscape-logo .modal-header {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.project-modal.landscape-logo .modal-image {
+  width: 220px;
+  max-width: 100%;
+  height: 110px;
+  border-radius: 16px;
 }
 
 .modal-title {
@@ -249,13 +263,16 @@
   }
 
   .modal-header {
-    flex-direction: column;
-    text-align: center;
     padding: 2rem 1.5rem;
   }
 
   .modal-image {
-    width: 100px;
+    width: 110px;
+    height: 110px;
+  }
+
+  .project-modal.landscape-logo .modal-image {
+    width: 200px;
     height: 100px;
   }
 
@@ -286,11 +303,18 @@
 
   .modal-header {
     padding: 1.5rem 1rem;
+    gap: 1.2rem;
   }
 
   .modal-image {
-    width: 70px;
-    height: 70px;
+    width: 90px;
+    height: 90px;
+  }
+
+  .project-modal.landscape-logo .modal-image {
+    width: 100%;
+    max-width: 180px;
+    height: 90px;
   }
 
   .modal-title {

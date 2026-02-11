@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  overflow-y: auto;
+  min-height: 100dvh;
   font-family: var(--font-body);
 }
 
@@ -152,6 +152,7 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
+  height: 100dvh;
   text-align: center;
 }
 
