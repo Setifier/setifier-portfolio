@@ -102,7 +102,7 @@
   background:
     radial-gradient(
       ellipse at 50% 80%,
-      var(--accent-color, var(--color-dev)) 10,
+      var(--accent-color, var(--color-dev)) 10%,
       transparent 70%
     ),
     rgba(0, 0, 0, 0.4);
