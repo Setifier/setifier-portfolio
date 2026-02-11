@@ -11,6 +11,7 @@ on('camera:move', (targetPos) => { cameraTargetPos.copy(targetPos); });
 
 let cameraTargetPos = new THREE.Vector3(0, 0, SCENE.defaultCameraZ);
 let resizeController = null;
+let resizeTimeout = null;
 
 function initThreeScene() {
   const canvas = document.getElementById('three-canvas');
@@ -59,7 +60,10 @@ function initThreeScene() {
   // Use AbortController for cleanup
   if (resizeController) resizeController.abort();
   resizeController = new AbortController();
-  window.addEventListener('resize', onWindowResize, { signal: resizeController.signal });
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(onWindowResize, 150);
+  }, { signal: resizeController.signal });
 
   animate();
 }

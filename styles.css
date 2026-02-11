@@ -38,7 +38,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   background: radial-gradient(ellipse at center, var(--color-bg-dark) 0%, var(--color-bg) 100%);
   display: flex;
@@ -308,6 +308,8 @@ body {
   font-size: 1.35rem;
   letter-spacing: 0.05rem;
   color: rgba(255, 255, 255, 0.45);
+  opacity: 0;
+  transition: opacity 2s ease;
 }
 
 .tip-label {
@@ -318,11 +320,6 @@ body {
   margin-right: 0.4rem;
   text-transform: uppercase;
   letter-spacing: 0.1rem;
-}
-
-.tip-container {
-  opacity: 0;
-  transition: opacity 2s ease;
 }
 
 .tip-container.fade-in {
@@ -346,7 +343,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   display: none;
   z-index: 900;
@@ -405,6 +402,13 @@ body {
   pointer-events: all;
   text-transform: uppercase;
   letter-spacing: 0.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.back-btn-icon {
+  display: none;
 }
 
 .back-home-btn:hover {
@@ -702,10 +706,12 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
+  overflow-y: auto;
   display: none;
-  z-index: 1000;
+  z-index: 800;
+  background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg) 100%);
   transition: opacity var(--transition-med);
 }
 
@@ -718,42 +724,27 @@ body {
 }
 
 .universe-back-btn {
-  position: absolute;
+  position: fixed;
   top: 2rem;
   left: 2rem;
-  background: rgba(0, 0, 0, 0.7);
-  border: 2px solid var(--color-accent);
-  border-radius: 8px;
   padding: 1rem 2rem;
-  color: var(--color-accent);
+  background: rgba(26, 46, 66, 0.8);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--color-dev);
+  border-radius: 12px;
+  color: var(--color-dev);
   font-family: var(--font-heading);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all var(--transition-fast);
-  backdrop-filter: blur(10px);
-  text-transform: uppercase;
-  letter-spacing: 0.1rem;
-  z-index: 10;
+  z-index: 100;
 }
 
 .universe-back-btn:hover {
-  background: rgba(141, 189, 197, 0.2);
-  border-color: var(--color-accent-alt);
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(141, 189, 197, 0.4);
-}
-
-#universe-content {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow-y: auto;
-  display: none;
-  z-index: 800;
-  background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg) 100%);
+  background: rgba(134, 202, 191, 0.2);
+  transform: translateX(-5px);
+  box-shadow: 0 0 20px rgba(134, 202, 191, 0.4);
 }
 
 #universe-content.active {
@@ -764,7 +755,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   background: radial-gradient(ellipse at center, var(--color-bg-dark) 0%, var(--color-bg) 100%);
   z-index: 950;
@@ -868,6 +859,7 @@ body {
   .subtitle {
     font-size: 1rem;
     letter-spacing: 0.2rem;
+    margin-bottom: 2rem;
   }
 
   .new-game-button {
@@ -880,10 +872,45 @@ body {
     height: 80px;
   }
 
+  .options-button {
+    font-size: 1.2rem;
+    padding: 0.8rem 2rem;
+  }
+
   .universe-title {
     font-size: 2rem;
     letter-spacing: 0.3rem;
     margin-top: 2rem;
+  }
+
+  .universe-buttons {
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  .universe-btn {
+    flex: 1 1 calc(50% - 0.5rem);
+    padding: 0.8rem 1rem;
+  }
+
+  .back-home-btn {
+    min-height: 44px;
+    top: 1.5rem;
+    left: 1.5rem;
+  }
+
+  .selection-modal {
+    max-width: 90vw;
+    padding: 2rem;
+  }
+
+  .options-container {
+    padding: 2rem 1.5rem;
+  }
+
+  .options-title {
+    font-size: 2.5rem;
   }
 
   .universe-info {
@@ -898,5 +925,132 @@ body {
 
   .universe-info p {
     font-size: 1rem;
+  }
+
+  .universe-back-btn {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .new-game-button {
+    font-size: 1.2rem;
+    padding: 0.8rem 1.5rem;
+  }
+
+  .options-button {
+    font-size: 1rem;
+  }
+
+  .main-logo {
+    height: 60px;
+  }
+
+  .tip-container {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+
+  .universe-title {
+    font-size: 1.5rem;
+  }
+
+  .universe-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .universe-btn {
+    flex: 0 0 auto;
+    width: 140px;
+    height: 140px;
+    padding: 1rem;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 16px;
+    gap: 0.75rem;
+  }
+
+  .universe-btn .btn-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .universe-btn .btn-label {
+    font-size: 0.65rem;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .ui-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1rem;
+  }
+
+  .back-home-btn {
+    position: static;
+    order: -1;
+    align-self: flex-start;
+    margin: 0 0 0.5rem 1rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .back-btn-label {
+    display: none;
+  }
+
+  .back-btn-icon {
+    display: block;
+  }
+
+  .selection-modal {
+    max-width: 95vw;
+    padding: 1.5rem;
+  }
+
+  .selection-modal h3 {
+    font-size: 1.5rem;
+  }
+
+  .options-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .options-title {
+    font-size: 2rem;
+  }
+
+  .options-section {
+    padding: 1.5rem;
+  }
+
+  .universe-back-btn {
+    position: static;
+    font-size: 0;
+    padding: 0.6rem 1rem;
+    margin: 1rem 0.75rem 0;
+    display: inline-flex;
+    align-items: center;
+    z-index: 1;
+  }
+
+  .universe-back-btn::before {
+    content: "\2190";
+    font-size: 1.1rem;
   }
 }

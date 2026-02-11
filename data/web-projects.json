@@ -8,8 +8,8 @@
       "description": "Create custom lottery draws with your own entries",
       "fullDescription": "Aleatory is a lottery app for creating custom draws with your own entries. Save frequently used items in folders, track complete draw history with timestamps, and enjoy smooth animated wheel transitions.\n\nBuild your library of contestants or options and reuse them instantly. Create tournament brackets with group stages or single-elimination formats, customize rules, and track progression.\n\nUse as guest for quick draws, or create an account to sync your data across devices.",
       "link": "https://aleatory.fr",
-      "thumbnail": "assets/images/web-projects/aleatory/logo_aleatory.webp",
-      "image": "assets/images/web-projects/aleatory/logo_aleatory.webp",
+      "thumbnail": "assets/images/web-projects/aleatory/logo_aleatory.png",
+      "image": "assets/images/web-projects/aleatory/logo_aleatory.png",
       "technologies": ["React", "TypeScript", "Vite", "Supabase"],
       "allTechnologies": [
         "React",
@@ -30,15 +30,6 @@
       "technologies": ["Next.js", "TypeScript", "Better-Auth", "Prisma"]
     },
     {
-      "id": "portfolio",
-      "title": "My Portfolio",
-      "description": "The game-styled portfolio you're exploring right now.",
-      "link": "",
-      "thumbnail": "assets/logo.png",
-      "image": "assets/logo.png",
-      "technologies": ["HTML", "CSS", "JavaScript"]
-    },
-    {
       "id": "yeye-pronos",
       "title": "Yeye Pronos",
       "description": "A sports betting prediction platform.",
@@ -54,6 +45,15 @@
         "Tailwind CSS",
         "ESPN API"
       ]
+    },
+    {
+      "id": "portfolio",
+      "title": "My Portfolio",
+      "description": "The game-styled portfolio you're exploring right now.",
+      "link": "",
+      "thumbnail": "assets/logo.png",
+      "image": "assets/logo.png",
+      "technologies": ["HTML", "CSS", "JavaScript"]
     }
   ]
 }

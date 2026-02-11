@@ -1,0 +1,249 @@
+.design-planet-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow-y: auto;
+  font-family: var(--font-body);
+}
+
+.design-planet-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #2c1a3e 0%, #4a2f58 50%, #2c1a3e 100%);
+  z-index: -1;
+}
+
+.design-planet-background::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(193, 128, 161, 0.1) 0%,
+    transparent 40%
+  );
+  animation: pulse 10s ease-in-out infinite;
+}
+
+.design-planet-content {
+  position: relative;
+  padding: 4rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.design-planet-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--color-design);
+  text-shadow: 0 0 30px rgba(193, 128, 161, 0.6);
+  letter-spacing: 0.1em;
+}
+
+.design-section-title {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: left;
+  margin: 3rem 0 1.5rem 0;
+  color: var(--color-design);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-bottom: 2px solid rgba(193, 128, 161, 0.3);
+  padding-bottom: 0.5rem;
+}
+
+.design-section-placeholder {
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  color: var(--color-text-dim, #888);
+  text-align: center;
+  padding: 3rem 2rem;
+  background: rgba(74, 47, 88, 0.2);
+  border: 1px dashed rgba(193, 128, 161, 0.25);
+  border-radius: 16px;
+}
+
+.design-showcase {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 2rem;
+  padding: 1rem 0;
+}
+
+.design-card {
+  background: rgba(74, 47, 88, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(193, 128, 161, 0.2);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(30px);
+  animation: blurFadeIn 0.8s ease forwards;
+}
+
+.design-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  border-color: var(--color-design);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(193, 128, 161, 0.3);
+}
+
+.design-card-image {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.design-card-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
+  transition: transform 0.4s ease;
+}
+
+.design-card:hover .design-card-image img {
+  transform: scale(1.05);
+}
+
+.design-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid rgba(193, 128, 161, 0.15);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: all 0.3s ease;
+}
+
+.design-card:hover .design-card-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Placeholder (Arts/Game coming soon) --- */
+
+.placeholder-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.placeholder-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  color: var(--color-design);
+  margin-bottom: 1rem;
+}
+
+.placeholder-message {
+  font-size: 1.5rem;
+  color: var(--color-text-dim);
+}
+
+@media (max-width: 768px) {
+  .design-planet-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .design-planet-content {
+    padding: 2rem 1rem;
+  }
+
+  .design-section-title {
+    font-size: 1.8rem;
+    margin: 2rem 0 1rem 0;
+  }
+
+  .design-showcase {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .placeholder-title {
+    font-size: 2rem;
+  }
+
+  .placeholder-message {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* -- Design cards: horizontal compact list -- */
+  .design-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 12px;
+  }
+
+  .design-card-image {
+    width: 60px;
+    height: 60px;
+    aspect-ratio: auto;
+    padding: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .design-card-title {
+    opacity: 1;
+    transform: none;
+    padding: 0.75rem 1rem;
+    flex: 1;
+    text-align: left;
+    background: transparent;
+    border-top: none;
+  }
+
+  .design-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .design-planet-title {
+    font-size: 1.6rem;
+  }
+
+  .design-section-title {
+    font-size: 1.4rem;
+  }
+
+  .design-planet-content {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .placeholder-title {
+    font-size: 1.6rem;
+  }
+
+  .placeholder-message {
+    font-size: 1.1rem;
+  }
+}
