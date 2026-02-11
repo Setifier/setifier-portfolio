@@ -209,12 +209,11 @@
   width: 100%;
   height: 180px;
   background:
-    radial-gradient(
-      ellipse at 50% 80%,
-      var(--card-color, var(--color-dev)) 15%,
-      transparent 70%
-    ),
-    rgba(0, 0, 0, 0.4);
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--card-color, var(--color-dev)) 12%, transparent) 0%,
+      rgba(0, 0, 0, 0.5) 60%
+    );
   border-bottom: 2px solid var(--card-color, var(--color-dev));
   display: flex;
   align-items: center;

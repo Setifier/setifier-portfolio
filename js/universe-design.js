@@ -60,7 +60,7 @@ export async function initDesignPlanet(container) {
   cards.forEach(card => {
     const project = projectsData.find(p => p.id === card.dataset.id);
     card.addEventListener('click', () => {
-      openProjectModal(project, COLORS.designAccent);
+      openProjectModal(project, COLORS.designAccent, { layout: 'design' });
     });
   });
 }

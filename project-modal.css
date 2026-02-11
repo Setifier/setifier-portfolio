@@ -100,12 +100,11 @@
   object-fit: contain;
   border-radius: 16px;
   background:
-    radial-gradient(
-      ellipse at 50% 80%,
-      var(--accent-color, var(--color-dev)) 10%,
-      transparent 70%
-    ),
-    rgba(0, 0, 0, 0.4);
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--accent-color, var(--color-dev)) 15%, transparent) 0%,
+      rgba(0, 0, 0, 0.5) 70%
+    );
   padding: 1.2rem;
   border: 2px solid var(--accent-color, var(--color-dev));
   filter: drop-shadow(0 0 12px var(--accent-color, var(--color-dev)));
@@ -113,6 +112,47 @@
 
 .modal-header-text {
   flex: 1;
+}
+
+/* Landscape logo: image above title, rectangular frame */
+/* Design Planet modal layout: title → image → tech → button */
+.project-modal.design-layout .modal-header {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-bottom: none;
+}
+
+.project-modal.design-layout .modal-header-text {
+  order: -1;
+}
+
+.project-modal.design-layout .modal-short-desc {
+  display: none;
+}
+
+.project-modal.design-layout .modal-image {
+  width: 200px;
+  height: 200px;
+}
+
+.project-modal.design-layout .modal-body .modal-section:first-child {
+  display: none;
+}
+
+.project-modal.design-layout .modal-body .modal-section:first-child.expanded {
+  display: block;
+}
+
+.project-modal.design-layout .modal-tech-list {
+  justify-content: center;
+}
+
+/* Design Planet + landscape logo: hero-sized rectangular frame */
+.project-modal.design-layout.landscape-logo .modal-image {
+  width: 340px;
+  max-width: 90%;
+  height: 170px;
 }
 
 /* Landscape logo: image above title, rectangular frame */
@@ -276,6 +316,12 @@
     height: 100px;
   }
 
+  .project-modal.design-layout.landscape-logo .modal-image {
+    width: 300px;
+    max-width: 90%;
+    height: 150px;
+  }
+
   .modal-title {
     font-size: 1.5rem;
   }
@@ -315,6 +361,12 @@
     width: 100%;
     max-width: 180px;
     height: 90px;
+  }
+
+  .project-modal.design-layout.landscape-logo .modal-image {
+    width: 100%;
+    max-width: 260px;
+    height: 130px;
   }
 
   .modal-title {

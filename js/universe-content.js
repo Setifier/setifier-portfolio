@@ -101,7 +101,7 @@ function createProjectModal() {
   modal.querySelector('.modal-content').addEventListener('click', (e) => e.stopPropagation());
 }
 
-export function openProjectModal(project, color, { onOpen } = {}) {
+export function openProjectModal(project, color, { onOpen, layout } = {}) {
   const modal = document.getElementById('project-modal');
   if (!modal) return;
 
@@ -114,6 +114,7 @@ export function openProjectModal(project, color, { onOpen } = {}) {
   const fullDescription = project.fullDescription || description;
 
   modal.classList.remove('landscape-logo');
+  modal.classList.remove('design-layout');
   const modalImage = modal.querySelector('.modal-image');
   modalImage.src = imagePath;
 
@@ -144,11 +145,29 @@ export function openProjectModal(project, color, { onOpen } = {}) {
   }
 
   const linkBtn = modal.querySelector('.modal-link-btn');
-  if (project.link) {
+  const descSection = modal.querySelector('.modal-body .modal-section:first-child');
+  descSection.classList.remove('expanded');
+  linkBtn.onclick = null;
+
+  if (layout === 'design') {
+    modal.classList.add('design-layout');
+    linkBtn.href = '#';
+    linkBtn.style.display = 'block';
+    linkBtn.style.background = color;
+    linkBtn.style.borderColor = color;
+    linkBtn.textContent = 'Plus de détails →';
+    linkBtn.onclick = (e) => {
+      e.preventDefault();
+      descSection.classList.toggle('expanded');
+      linkBtn.textContent = descSection.classList.contains('expanded')
+        ? 'Moins de détails' : 'Plus de détails →';
+    };
+  } else if (project.link) {
     linkBtn.href = project.link;
     linkBtn.style.display = 'block';
     linkBtn.style.background = color;
     linkBtn.style.borderColor = color;
+    linkBtn.innerHTML = 'Visit Project &rarr;';
   } else {
     linkBtn.style.display = 'none';
   }
