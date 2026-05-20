@@ -15,7 +15,7 @@ export function initWelcomeScreen() {
 
   if (newGameBtn) {
     newGameBtn.addEventListener('click', () => {
-      transitionToUniverseScreen();
+      transitionToLoadingScreen();
     });
   }
 
@@ -50,7 +50,7 @@ export function initUniverseButtons() {
 export function initCloseButtons() {
   const closeBtn = document.querySelector('.close-modal-btn');
   const backHomeBtn = document.getElementById('back-to-home-btn');
-  const optionsBackBtn = document.getElementById('options-back-btn');
+  const optionsBackBtns = document.querySelectorAll('.options-back-trigger');
 
   if (closeBtn) {
     closeBtn.addEventListener('click', (e) => {
@@ -65,11 +65,34 @@ export function initCloseButtons() {
     });
   }
 
-  if (optionsBackBtn) {
-    optionsBackBtn.addEventListener('click', () => {
-      backToWelcomeFromOptions();
+  optionsBackBtns.forEach(btn => {
+    btn.addEventListener('click', () => backToWelcomeFromOptions());
+  });
+}
+
+function transitionToLoadingScreen() {
+  const welcomeScreen = document.getElementById('welcome-screen');
+
+  stopHomeTips();
+  welcomeScreen.classList.remove('active');
+  welcomeScreen.classList.add('hidden');
+
+  setTimeout(() => {
+    welcomeScreen.style.display = 'none';
+
+    import('./loading.js').then(({ runLoadingSequence }) => {
+      runLoadingSequence(() => {
+        // Loading complete → show universe
+        const universeScreen = document.getElementById('universe-screen');
+        universeScreen.classList.add('active');
+        State.set('currentScreen', 'universe');
+        startUniverseTips();
+        if (!State.get('threeRenderer')) {
+          emit('scene:init');
+        }
+      });
     });
-  }
+  }, WELCOME.transitionDuration);
 }
 
 function transitionToUniverseScreen() {

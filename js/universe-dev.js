@@ -1,5 +1,9 @@
 import { openProjectModal } from "./universe-content.js";
 import { COLORS } from "./constants.js";
+import { t, tProject } from "./i18n.js";
+
+// Registry: project id → project object (for langchange updates)
+const projectRegistry = new Map();
 
 export function initDevWorld(container) {
   const devWorldContainer = document.createElement("div");
@@ -7,10 +11,10 @@ export function initDevWorld(container) {
   devWorldContainer.innerHTML = `
     <div class="dev-world-background"></div>
     <div class="dev-world-content">
-      <h1 class="dev-world-title">CHOOSE YOUR STAGE</h1>
-      <h2 class="dev-section-title">WEB PROJECTS</h2>
+      <h1 class="dev-world-title" data-i18n="dev.title">${t('dev.title')}</h1>
+      <h2 class="dev-section-title" data-i18n="dev.webProjects">${t('dev.webProjects')}</h2>
       <div class="projects-grid" id="web-projects-grid"></div>
-      <h2 class="dev-section-title">MOBILE PROJECTS</h2>
+      <h2 class="dev-section-title" data-i18n="dev.mobileProjects">${t('dev.mobileProjects')}</h2>
       <div class="projects-grid" id="mobile-projects-grid"></div>
     </div>
   `;
@@ -45,6 +49,9 @@ function createProjectCards(projectsData, containerId) {
   if (!grid) return;
 
   projectsData.forEach((project, index) => {
+    // Store in registry for langchange updates
+    projectRegistry.set(project.id, project);
+
     const color = COLORS.cardCycle[index % COLORS.cardCycle.length];
     const card = document.createElement("div");
     card.className = "project-card";
@@ -55,7 +62,7 @@ function createProjectCards(projectsData, containerId) {
       <div class="project-card-banner" style="border-color: ${color};"><img src="${logoSrc}" alt="${project.title}" class="project-card-logo"></div>
       <div class="project-card-body">
         <h3 class="project-card-title">${project.title}</h3>
-        <p class="project-card-description">${project.description}</p>
+        <p class="project-card-description" data-project-id="${project.id}">${tProject(project, 'description')}</p>
         <div class="project-card-tech">${project.technologies
           .slice(0, 4)
           .map(
@@ -63,7 +70,7 @@ function createProjectCards(projectsData, containerId) {
               `<span class="tech-badge" style="border-color: ${color}; color: ${color};">${tech}</span>`,
           )
           .join("")}</div>
-        <button class="project-card-btn" style="background: ${color}; border-color: ${color};">View Details &rarr;</button>
+        <button class="project-card-btn" data-i18n="dev.viewDetails" style="background: ${color}; border-color: ${color};">${t('dev.viewDetails')}</button>
       </div>`;
     const logo = card.querySelector(".project-card-logo");
     logo.addEventListener("load", () => {
@@ -77,3 +84,11 @@ function createProjectCards(projectsData, containerId) {
     grid.appendChild(card);
   });
 }
+
+// Update project descriptions when language changes (module-level, runs once)
+document.addEventListener('langchange', () => {
+  document.querySelectorAll('.project-card-description[data-project-id]').forEach(el => {
+    const project = projectRegistry.get(el.dataset.projectId);
+    if (project) el.textContent = tProject(project, 'description');
+  });
+});

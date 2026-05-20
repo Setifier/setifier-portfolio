@@ -2,6 +2,7 @@ import * as State from './state.js';
 import { emit } from './events.js';
 import { PLANET_CAMERA_OFFSETS, GLOW, CAMERA } from './constants.js';
 import { initUniverseContent } from './universe-content.js';
+import { t } from './i18n.js';
 
 let abortController = null;
 
@@ -29,9 +30,11 @@ export function onPlanetHover(planetMesh) {
 
   const planet = State.get('planets').find(p => p.mesh === planetMesh);
   if (planet) {
-    planet.glow.material.opacity = GLOW.hoverOpacity;
-    planet.glow.scale.set(GLOW.hoverScale, GLOW.hoverScale, GLOW.hoverScale);
-    showTooltip(planet.mesh.userData.name);
+    if (planet.glow) {
+      planet.glow.material.opacity = GLOW.hoverOpacity;
+      planet.glow.scale.set(GLOW.hoverScale, GLOW.hoverScale, GLOW.hoverScale);
+    }
+    showTooltip(planet.data.id);
   }
 }
 
@@ -39,7 +42,7 @@ export function onPlanetLeave() {
   const hoveredPlanet = State.get('hoveredPlanet');
   if (hoveredPlanet) {
     const planet = State.get('planets').find(p => p.mesh === hoveredPlanet);
-    if (planet && planet !== State.get('selectedPlanet')) {
+    if (planet && planet !== State.get('selectedPlanet') && planet.glow) {
       planet.glow.material.opacity = GLOW.defaultOpacity;
       planet.glow.scale.set(GLOW.defaultScale, GLOW.defaultScale, GLOW.defaultScale);
     }
@@ -74,12 +77,16 @@ export function selectPlanet(universeId) {
   if (activeBtn) activeBtn.classList.add('active');
 
   planets.forEach(p => {
-    p.glow.material.opacity = GLOW.defaultOpacity;
-    p.glow.scale.set(GLOW.defaultScale, GLOW.defaultScale, GLOW.defaultScale);
+    if (p.glow) {
+      p.glow.material.opacity = GLOW.defaultOpacity;
+      p.glow.scale.set(GLOW.defaultScale, GLOW.defaultScale, GLOW.defaultScale);
+    }
   });
 
-  planet.glow.material.opacity = GLOW.selectedOpacity;
-  planet.glow.scale.set(GLOW.selectedScale, GLOW.selectedScale, GLOW.selectedScale);
+  if (planet.glow) {
+    planet.glow.material.opacity = GLOW.selectedOpacity;
+    planet.glow.scale.set(GLOW.selectedScale, GLOW.selectedScale, GLOW.selectedScale);
+  }
 
   const planetPos = planet.mesh.position;
   const offsetX = planetPos.x > 0 ? -8 : 8;
@@ -97,7 +104,7 @@ export function selectPlanet(universeId) {
   );
   emit('camera:move', targetPos);
 
-  showSelectionModal(planet.data.name, planet.data.description);
+  showSelectionModal(planet.data.id);
   showConnectionLine();
 }
 
@@ -115,7 +122,7 @@ export function deselectPlanet() {
   const hoveredPlanet = State.get('hoveredPlanet');
   if (hoveredPlanet) {
     const planet = State.get('planets').find(p => p.mesh === hoveredPlanet);
-    if (planet) {
+    if (planet && planet.glow) {
       planet.glow.material.opacity = GLOW.hoverOpacity;
       planet.glow.scale.set(GLOW.hoverScale, GLOW.hoverScale, GLOW.hoverScale);
     }
@@ -169,11 +176,11 @@ export function goToUniverse(universeId) {
 // DOM helpers (private)
 // ---------------------
 
-function showTooltip(name) {
+function showTooltip(planetId) {
   const tooltip = document.getElementById('planet-tooltip');
   const tooltipName = document.getElementById('tooltip-name');
   const mouse = State.get('mouse');
-  tooltipName.textContent = name;
+  tooltipName.textContent = t(`planets.${planetId}.name`);
   tooltip.style.left = `${mouse.x * 50 + 50}%`;
   tooltip.style.top = `${-mouse.y * 50 + 50}%`;
   tooltip.classList.add('visible');
@@ -183,12 +190,23 @@ function hideTooltip() {
   document.getElementById('planet-tooltip').classList.remove('visible');
 }
 
-function showSelectionModal(name, description) {
+function showSelectionModal(planetId) {
   const modal = document.getElementById('selection-modal');
-  document.getElementById('modal-universe-name').textContent = name;
-  document.getElementById('modal-universe-description').textContent = description;
+  modal.dataset.activePlanet = planetId;
+  document.getElementById('modal-universe-name').textContent = t(`planets.${planetId}.name`);
+  document.getElementById('modal-universe-description').textContent = t(`planets.${planetId}.description`);
   modal.classList.add('visible');
 }
+
+// Update selection modal instantly when language switches
+document.addEventListener('langchange', () => {
+  const modal = document.getElementById('selection-modal');
+  if (!modal?.classList.contains('visible')) return;
+  const planetId = modal.dataset.activePlanet;
+  if (!planetId) return;
+  document.getElementById('modal-universe-name').textContent = t(`planets.${planetId}.name`);
+  document.getElementById('modal-universe-description').textContent = t(`planets.${planetId}.description`);
+});
 
 function hideSelectionModal() {
   document.getElementById('selection-modal').classList.remove('visible');

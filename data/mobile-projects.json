@@ -6,6 +6,7 @@
       "id": "demsBarberShop",
       "title": "Dem's Barber Shop",
       "description": "A mobile app for booking haircuts.",
+      "description_fr": "Une application mobile pour réserver ses coupes chez un barbier.",
       "link": "https://demsbarbershop.example.com",
       "thumbnail": "assets/images/mobile-projects/demsBarberShop/logo_demsBarberShop2.png",
       "image": "assets/images/mobile-projects/demsBarberShop/logo_demsBarberShop.png",

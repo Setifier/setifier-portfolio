@@ -1,12 +1,13 @@
-import { HOME_TIPS, UNIVERSE_TIPS, TIPS } from './constants.js';
+import { TIPS } from './constants.js';
 import * as State from './state.js';
+import { t } from './i18n.js';
 
 export function initTips() {
-  startTipRotation('tip-text', HOME_TIPS, 'home');
+  startTipRotation('tip-text', t('tips.home'), 'home');
 }
 
 export function startUniverseTips() {
-  startTipRotation('universe-tip-text', UNIVERSE_TIPS, 'universe');
+  startTipRotation('universe-tip-text', t('tips.universe'), 'universe');
 }
 
 export function stopUniverseTips() {
@@ -24,6 +25,18 @@ export function stopHomeTips() {
     State.set('homeTipInterval', null);
   }
 }
+
+// Restart tips in the correct language when the user switches language
+document.addEventListener('langchange', () => {
+  const screen = State.get('currentScreen');
+  if (screen === 'welcome' || !screen) {
+    stopHomeTips();
+    initTips();
+  } else if (screen === 'universe') {
+    stopUniverseTips();
+    startUniverseTips();
+  }
+});
 
 function pickRandomTip(tipsArray, currentIndex) {
   if (tipsArray.length <= 1) return 0;

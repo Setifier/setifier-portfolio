@@ -1,5 +1,6 @@
 import { openProjectModal, initPlaceholderUniverse } from './universe-content.js';
 import { COLORS } from './constants.js';
+import { t } from './i18n.js';
 
 function renderCards(projects, startIndex) {
   return projects.map((project, i) => `
@@ -12,15 +13,15 @@ function renderCards(projects, startIndex) {
   `).join('');
 }
 
-function renderSection(title, projects, startIndex) {
+function renderSection(title, i18nKey, projects, startIndex) {
   if (!projects.length) {
     return `
-      <h2 class="design-section-title">${title}</h2>
-      <div class="design-section-placeholder">Coming soon...</div>
+      <h2 class="design-section-title" data-i18n="${i18nKey}">${title}</h2>
+      <div class="design-section-placeholder" data-i18n="design.comingSoon">${t('design.comingSoon')}</div>
     `;
   }
   return `
-    <h2 class="design-section-title">${title}</h2>
+    <h2 class="design-section-title" data-i18n="${i18nKey}">${title}</h2>
     <div class="design-showcase">
       ${renderCards(projects, startIndex)}
     </div>
@@ -39,7 +40,7 @@ export async function initDesignPlanet(container) {
     projectsData = data.projects;
   } catch (error) {
     console.error('Error loading design projects:', error);
-    initPlaceholderUniverse(container, 'DESIGN PLANET', 'Error loading projects.');
+    initPlaceholderUniverse(container, 'DESIGN PLANET', t('design.errorLoading'));
     return;
   }
 
@@ -49,9 +50,9 @@ export async function initDesignPlanet(container) {
   designPlanetContainer.innerHTML = `
     <div class="design-planet-background"></div>
     <div class="design-planet-content">
-      <h1 class="design-planet-title">BRAND & LOGO DESIGN</h1>
-      ${renderSection('Clients', clientProjects, 0)}
-      ${renderSection('Personal Projects', personalProjects, clientProjects.length)}
+      <h1 class="design-planet-title" data-i18n="design.title">${t('design.title')}</h1>
+      ${renderSection(t('design.clients'), 'design.clients', clientProjects, 0)}
+      ${renderSection(t('design.personal'), 'design.personal', personalProjects, clientProjects.length)}
     </div>
   `;
   container.appendChild(designPlanetContainer);

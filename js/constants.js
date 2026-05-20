@@ -4,9 +4,9 @@
 
 export const UNIVERSES = [
   {
-    id: 'dev',
-    name: 'DEV WORLD',
-    description: 'Web & Mobile Development - Full Stack Projects',
+    id: "dev",
+    name: "DEV WORLD",
+    description: "Web & Mobile Development - Full Stack Projects",
     position: { x: -30, y: -3, z: 10 },
     color: 0x86_ca_bf,
     glowColor: 0x86_ca_bf,
@@ -14,9 +14,9 @@ export const UNIVERSES = [
     size: 5,
   },
   {
-    id: 'design',
-    name: 'DESIGN PLANET',
-    description: 'UI/UX Design - Brand Identity - Creative Solutions',
+    id: "design",
+    name: "DESIGN PLANET",
+    description: "UI/UX Design - Brand Identity - Logos",
     position: { x: 30, y: 4, z: 5 },
     color: 0xc1_80_a1,
     glowColor: 0xc1_80_a1,
@@ -24,9 +24,9 @@ export const UNIVERSES = [
     size: 6.5,
   },
   {
-    id: 'arts',
-    name: 'ARTS STATION',
-    description: 'Digital Art - Illustrations - Creative Expression',
+    id: "arts",
+    name: "ARTS STATION",
+    description: "Digital Art - Illustrations - Concept Art",
     position: { x: 25, y: -16, z: -15 },
     color: 0x8d_bd_c5,
     glowColor: 0x8d_bd_c5,
@@ -34,9 +34,9 @@ export const UNIVERSES = [
     size: 5,
   },
   {
-    id: 'game',
-    name: 'GAME EARTH',
-    description: 'Game Development - Interactive Experiences - The Dream',
+    id: "game",
+    name: "GAME EARTH",
+    description: "Game Development - Scenario Writing - Character Design",
     position: { x: -20, y: -18, z: -20 },
     color: 0xb0_84_b1,
     glowColor: 0xb0_84_b1,
@@ -50,17 +50,17 @@ export const UNIVERSES = [
 // ---------------------
 
 export const HOME_TIPS = [
-  'To learn more about me, head to the Options.',
-  'Click on Options for additional information.',
-  'Press New Game to explore my creative universes.',
-  'Click on NEW GAME to choose your field and discover the projects.',
+  "To learn more about me, head to the Options.",
+  "Click on Options for additional information.",
+  "Press New Game to explore my creative universes.",
+  "Click on NEW GAME to choose your field and discover the projects.",
 ];
 
 export const UNIVERSE_TIPS = [
-  'Each planet represents a different creative universe.',
-  'Hover over the planets to discover their name.',
-  'Click on a planet or a button to select it.',
-  'Explore each universe to discover my projects.',
+  "Each planet represents a different creative universe.",
+  "Hover over the planets to discover their name.",
+  "Click on a planet or a button to select it.",
+  "Explore each universe to discover my projects.",
 ];
 
 export const TIPS = {
@@ -96,11 +96,11 @@ export const SCENE = {
   starRotationY: 0.00006,
   starRotationX: 0.00002,
   cameraLerp: 0.05,
-  ambientIntensity: 0.4,
-  mainLightIntensity: 1.2,
-  fillLightIntensity: 0.6,
-  rimLightIntensity: 0.4,
-  planetLightIntensity: 0.8,
+  ambientIntensity: 0.2,
+  mainLightIntensity: 0.8,
+  fillLightIntensity: 0.3,
+  rimLightIntensity: 0.2,
+  planetLightIntensity: 0.4,
   planetLightRange: 30,
 };
 
@@ -110,10 +110,10 @@ export const CAMERA = {
 
 // Per-planet camera offset adjustments when selecting
 export const PLANET_CAMERA_OFFSETS = {
-  dev:    { zoom: -8, x: -4, y: 0 },
-  design: { zoom: 0,  x: 0,  y: 4 },
-  arts:   { zoom: -15, x: -6, y: 0 },
-  game:   { zoom: -18, x: 18, y: 0 },
+  dev: { zoom: -8, x: -4, y: 0 },
+  design: { zoom: 0, x: 0, y: 4 },
+  arts: { zoom: -15, x: -6, y: 0 },
+  game: { zoom: -18, x: 18, y: 0 },
 };
 
 // ---------------------
@@ -142,17 +142,17 @@ export const TEXTURE = {
 // ---------------------
 
 export const COLORS = {
-  dev: '#86cabf',
-  design: '#c180a1',
-  arts: '#8dbdc5',
-  game: '#b084b1',
-  accent: '#8dbdc5',
-  secondary: '#9e87be',
-  accentAlt: '#96a7c5',
-  highlight: '#da7586',
-  designAccent: '#c180a1',
+  dev: "#86cabf",
+  design: "#c180a1",
+  arts: "#8dbdc5",
+  game: "#b084b1",
+  accent: "#8dbdc5",
+  secondary: "#9e87be",
+  accentAlt: "#96a7c5",
+  highlight: "#da7586",
+  designAccent: "#c180a1",
   // Cycling palette for dev project cards
-  cardCycle: ['#86cabf', '#8dbdc5', '#96a7c5', '#9e87be', '#b084b1', '#c180a1'],
+  cardCycle: ["#86cabf", "#8dbdc5", "#96a7c5", "#9e87be", "#b084b1", "#c180a1"],
 };
 
 // ---------------------
@@ -167,7 +167,35 @@ export const DEV_RING = {
   tiltX: Math.PI / 2.5,
 };
 
+// ---------------------
+// 3D Planet models (.glb)
+// ---------------------
+
+export const PLANET_MODELS = {
+  dev: {
+    path: 'assets/models/dev_world.glb',
+    scale: 2.5,
+    rotationSpeed: 0.0008,
+    tiltX: 0.15,
+    tiltZ: 0.1,
+  },
+};
+
 export const GAME_SATELLITES = [
-  { radius: 0.6, color: 0xff_ff_00, orbitOffset: 3.5, speed: 0.006, tilt: 0.2, startAngle: 0 },
-  { radius: 0.5, color: 0x00_ff_ff, orbitOffset: 5.5, speed: 0.004, tilt: -0.3, startAngle: Math.PI },
+  {
+    radius: 0.6,
+    color: 0xff_ff_00,
+    orbitOffset: 3.5,
+    speed: 0.006,
+    tilt: 0.2,
+    startAngle: 0,
+  },
+  {
+    radius: 0.5,
+    color: 0x00_ff_ff,
+    orbitOffset: 5.5,
+    speed: 0.004,
+    tilt: -0.3,
+    startAngle: Math.PI,
+  },
 ];

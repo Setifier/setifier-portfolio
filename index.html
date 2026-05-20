@@ -30,6 +30,64 @@
     <title>Slim Etifier - Game Portfolio</title>
   </head>
   <body>
+    <!-- ========== LANGUAGE SWITCHER ========== -->
+    <div class="lang-switcher" aria-label="Language selector">
+      <button
+        class="lang-btn active"
+        data-lang="en"
+        data-tooltip="English"
+        aria-label="English"
+      >
+        <!-- UK flag -->
+        <svg
+          class="lang-flag"
+          viewBox="0 0 60 40"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width="60" height="40" fill="#012169" />
+          <line x1="0" y1="0" x2="60" y2="40" stroke="#fff" stroke-width="9" />
+          <line x1="60" y1="0" x2="0" y2="40" stroke="#fff" stroke-width="9" />
+          <line
+            x1="0"
+            y1="0"
+            x2="60"
+            y2="40"
+            stroke="#C8102E"
+            stroke-width="5"
+          />
+          <line
+            x1="60"
+            y1="0"
+            x2="0"
+            y2="40"
+            stroke="#C8102E"
+            stroke-width="5"
+          />
+          <rect x="25" y="0" width="10" height="40" fill="#fff" />
+          <rect x="0" y="15" width="60" height="10" fill="#fff" />
+          <rect x="27" y="0" width="6" height="40" fill="#C8102E" />
+          <rect x="0" y="17" width="60" height="6" fill="#C8102E" />
+        </svg>
+      </button>
+      <button
+        class="lang-btn"
+        data-lang="fr"
+        data-tooltip="Français"
+        aria-label="Français"
+      >
+        <!-- French flag -->
+        <svg
+          class="lang-flag"
+          viewBox="0 0 60 40"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect width="20" height="40" fill="#002395" />
+          <rect x="20" width="20" height="40" fill="#fff" />
+          <rect x="40" width="20" height="40" fill="#ED2939" />
+        </svg>
+      </button>
+    </div>
+
     <!-- ========== HOME SCREEN ========== -->
     <div id="welcome-screen" class="active">
       <div class="stars-background"></div>
@@ -44,27 +102,67 @@
           <span class="title-line">PORTFOLIO</span>
         </h1>
 
-        <div class="subtitle">Creative Developer Universe</div>
+        <div class="subtitle" data-i18n="home.subtitle">
+          Universe Creator <br />
+          Full Stack Developer
+        </div>
 
         <div class="menu-buttons">
           <button id="new-game-btn" class="new-game-button">
-            <span class="btn-text">NEW GAME</span>
+            <span class="btn-text" data-i18n="home.newGame">NEW GAME</span>
             <span class="btn-glow"></span>
           </button>
 
           <button id="options-btn" class="options-button">
-            <span class="btn-text">OPTIONS</span>
+            <span class="btn-text" data-i18n="home.options">OPTIONS</span>
             <span class="btn-glow"></span>
           </button>
         </div>
 
-        <div class="press-start">Press to start your journey</div>
+        <div class="press-start" data-i18n="home.pressStart">
+          Press to start your journey
+        </div>
 
         <div class="tip-container">
-          <span class="tip-label">Tip:</span>
+          <span class="tip-label" data-i18n="home.tipLabel">Tip:</span>
           <span id="tip-text" class="tip-text"></span>
         </div>
       </div>
+    </div>
+
+    <!-- ========== LOADING SCREEN ========== -->
+    <div id="loading-screen">
+
+      <!-- Stars + planet silhouettes floating around the bar -->
+      <div class="loading-deco" aria-hidden="true">
+        <!-- Stars — different sizes, delays, scattered across the deco area -->
+        <i class="ls-star" style="left:4%;  top:28%; --s:2px;   --d:0s   "></i>
+        <i class="ls-star" style="left:14%; top:68%; --s:1.5px; --d:0.8s "></i>
+        <i class="ls-star" style="left:25%; top:14%; --s:2.5px; --d:1.5s "></i>
+        <i class="ls-star" style="left:38%; top:78%; --s:1px;   --d:0.4s "></i>
+        <i class="ls-star" style="left:53%; top:22%; --s:2px;   --d:2.1s "></i>
+        <i class="ls-star" style="left:66%; top:62%; --s:1.5px; --d:1.1s "></i>
+        <i class="ls-star" style="left:80%; top:32%; --s:2.5px; --d:0.6s "></i>
+        <i class="ls-star" style="left:91%; top:72%; --s:2px;   --d:1.7s "></i>
+        <i class="ls-star" style="left:31%; top:50%; --s:1px;   --d:1.3s "></i>
+        <i class="ls-star" style="left:73%; top:10%; --s:1.5px; --d:0.2s "></i>
+        <!-- Planet silhouettes — border-only circles, partially peeking from the edges -->
+        <i class="ls-planet" style="left:0;   top:50%; width:30px; height:30px; margin:-15px 0 0 -15px"></i>
+        <i class="ls-planet" style="right:0;  top:50%; width:40px; height:40px; margin:-20px -20px 0 0"></i>
+        <i class="ls-planet" style="left:50%; top:0;   width:22px; height:22px; margin:-11px 0 0 -11px"></i>
+      </div>
+
+      <!-- Loading bar -->
+      <div class="loading-bar-wrapper">
+        <div class="loading-bar-track">
+          <div class="loading-bar-fill" id="loading-bar-fill"></div>
+        </div>
+        <div class="loading-bar-meta">
+          <span class="loading-status" id="loading-status"></span>
+          <span class="loading-percent" id="loading-percent">0%</span>
+        </div>
+      </div>
+
     </div>
 
     <!-- ========== UNIVERSE SELECTION SCREEN ========== -->
@@ -72,15 +170,27 @@
       <canvas id="three-canvas"></canvas>
 
       <div class="ui-overlay">
-        <h2 class="universe-title">SELECT STAGE</h2>
+        <h2 class="universe-title" data-i18n="universe.selectStage">
+          SELECT STAGE
+        </h2>
 
         <button id="back-to-home-btn" class="back-home-btn">
           <span class="back-btn-arrow">←</span>
-          <svg class="back-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            class="back-btn-icon"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M12 3L2 12h3v8h6v-5h2v5h6v-8h3L12 3z" />
             <circle cx="12" cy="10" r="2" />
           </svg>
-          <span class="back-btn-label">HOME</span>
+          <span class="back-btn-label" data-i18n="nav.home">HOME</span>
         </button>
 
         <div class="universe-buttons">
@@ -101,7 +211,9 @@
                 <line x1="14" y1="4" x2="10" y2="20" />
               </svg>
             </span>
-            <span class="btn-label">Web & Mobile Development</span>
+            <span class="btn-label" data-i18n="universe.buttons.dev"
+              >Web & Mobile Development</span
+            >
           </button>
           <button class="universe-btn" data-universe="design">
             <span class="btn-icon">
@@ -120,7 +232,9 @@
                 <line x1="9" y1="9" x2="9" y2="21" />
               </svg>
             </span>
-            <span class="btn-label">UX / UI Design</span>
+            <span class="btn-label" data-i18n="universe.buttons.design"
+              >UX / UI Design</span
+            >
           </button>
           <button class="universe-btn" data-universe="arts">
             <span class="btn-icon">
@@ -137,7 +251,9 @@
                 <path d="M2 22L12 2l3 7h7l-5.5 5 2 8L12 17l-6.5 5 2-8L2 9h7z" />
               </svg>
             </span>
-            <span class="btn-label">Arts & Illustrations</span>
+            <span class="btn-label" data-i18n="universe.buttons.arts"
+              >Arts & Illustrations</span
+            >
           </button>
           <button class="universe-btn" data-universe="game">
             <span class="btn-icon">
@@ -159,7 +275,9 @@
                 <circle cx="16" cy="14" r="0.8" fill="currentColor" />
               </svg>
             </span>
-            <span class="btn-label">Game Development</span>
+            <span class="btn-label" data-i18n="universe.buttons.game"
+              >Game Development</span
+            >
           </button>
         </div>
 
@@ -171,13 +289,17 @@
           <button class="close-modal-btn">&times;</button>
           <h3 id="modal-universe-name"></h3>
           <p id="modal-universe-description"></p>
-          <button id="enter-universe-btn" class="enter-btn">
+          <button
+            id="enter-universe-btn"
+            class="enter-btn"
+            data-i18n="universe.enterPlanet"
+          >
             ENTER PLANET
           </button>
         </div>
 
         <div class="tip-container universe-tip-container">
-          <span class="tip-label">Tip:</span>
+          <span class="tip-label" data-i18n="universe.tipLabel">Tip:</span>
           <span id="universe-tip-text" class="tip-text"></span>
         </div>
 
@@ -197,12 +319,15 @@
 
     <!-- ========== OPTIONS SCREEN ========== -->
     <div id="options-screen">
+      <button id="options-back-btn-top" class="back-home-btn options-back-trigger">
+        <span data-i18n="options.backHome">← HOME</span>
+      </button>
       <div class="options-container">
-        <h1 class="options-title">OPTIONS</h1>
+        <h1 class="options-title" data-i18n="options.title">OPTIONS</h1>
 
         <div class="options-section">
-          <h2>ABOUT ME</h2>
-          <p>
+          <h2 data-i18n="options.aboutTitle">ABOUT ME</h2>
+          <p data-i18n-html="options.aboutText">
             Hello! I'm Slim Etifier, a creative full-stack developer with a
             passion for building immersive and interactive digital experiences.
             From web applications to game development, I love bringing ideas to
@@ -213,8 +338,8 @@
           </p>
         </div>
 
-        <button id="options-back-btn" class="back-home-btn">
-          <span>← HOME</span>
+        <button id="options-back-btn" class="back-home-btn options-back-trigger">
+          <span data-i18n="options.backHome">← HOME</span>
         </button>
       </div>
     </div>
@@ -226,6 +351,8 @@
 
     <!-- Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <!-- Application scripts -->
     <script type="module" src="js/main.js"></script>

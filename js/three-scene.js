@@ -1,5 +1,5 @@
 import * as State from './state.js';
-import { UNIVERSES, SCENE, DEV_RING, GAME_SATELLITES } from './constants.js';
+import { UNIVERSES, SCENE, DEV_RING, GAME_SATELLITES, PLANET_MODELS } from './constants.js';
 import { on } from './events.js';
 import { createAdvancedPlanetTextures } from './texture-generator.js';
 import { setupPlanetListeners, onPlanetHover, onPlanetLeave, updateConnectionLine } from './planet-interaction.js';
@@ -30,6 +30,10 @@ function initThreeScene() {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.7;
+  renderer.physicallyCorrectLights = true;
   State.set('threeRenderer', renderer);
 
   createStarfield();
@@ -116,20 +120,36 @@ function createPlanets() {
 
   UNIVERSES.forEach((universeData) => {
     const planetSize = universeData.size || 5;
-    const geometry = new THREE.SphereGeometry(planetSize, 64, 64);
-    const textures = createAdvancedPlanetTextures(universeData.id, universeData.color);
+    const modelConfig = PLANET_MODELS[universeData.id];
 
-    const material = new THREE.MeshStandardMaterial({
-      map: textures.colorMap,
-      normalMap: textures.normalMap,
-      roughnessMap: textures.roughnessMap,
-      roughness: textures.roughness,
-      metalness: textures.metalness,
-      emissive: universeData.emissive,
-      emissiveIntensity: 0.3,
-    });
+    let planetMesh;
 
-    const planetMesh = new THREE.Mesh(geometry, material);
+    if (modelConfig) {
+      // GLB model planet — use invisible hitbox for raycasting
+      const geometry = new THREE.SphereGeometry(planetSize, 16, 16);
+      const material = new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+      });
+      planetMesh = new THREE.Mesh(geometry, material);
+      loadPlanetModel(modelConfig, planetMesh, scene);
+    } else {
+      // Procedural planet (fallback for planets without .glb)
+      const geometry = new THREE.SphereGeometry(planetSize, 64, 64);
+      const textures = createAdvancedPlanetTextures(universeData.id, universeData.color);
+      const material = new THREE.MeshStandardMaterial({
+        map: textures.colorMap,
+        normalMap: textures.normalMap,
+        roughnessMap: textures.roughnessMap,
+        roughness: textures.roughness,
+        metalness: textures.metalness,
+        emissive: universeData.emissive,
+        emissiveIntensity: 0.3,
+      });
+      planetMesh = new THREE.Mesh(geometry, material);
+    }
+
     planetMesh.position.set(
       universeData.position.x,
       universeData.position.y,
@@ -141,21 +161,26 @@ function createPlanets() {
       name: universeData.name,
       description: universeData.description,
       originalY: universeData.position.y,
-      rotationSpeed: Math.random() * 0.002 + 0.001,
+      rotationSpeed: modelConfig
+        ? modelConfig.rotationSpeed
+        : Math.random() * 0.002 + 0.001,
     };
 
     scene.add(planetMesh);
 
-    const glowGeometry = new THREE.SphereGeometry(planetSize + 0.5, 64, 64);
-    const glowMaterial = new THREE.MeshBasicMaterial({
-      color: universeData.glowColor,
-      transparent: true,
-      opacity: 0.2,
-      side: THREE.BackSide,
-    });
-    const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
-    glowMesh.position.copy(planetMesh.position);
-    scene.add(glowMesh);
+    let glowMesh = null;
+    if (!modelConfig) {
+      const glowGeometry = new THREE.SphereGeometry(planetSize + 0.5, 64, 64);
+      const glowMaterial = new THREE.MeshBasicMaterial({
+        color: universeData.glowColor,
+        transparent: true,
+        opacity: 0.2,
+        side: THREE.BackSide,
+      });
+      glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
+      glowMesh.position.copy(planetMesh.position);
+      scene.add(glowMesh);
+    }
 
     const planetLight = new THREE.PointLight(universeData.glowColor, SCENE.planetLightIntensity, SCENE.planetLightRange);
     planetLight.position.copy(planetMesh.position);
@@ -164,7 +189,7 @@ function createPlanets() {
     let ring = null;
     let satellite = null;
 
-    if (universeData.id === 'dev') {
+    if (universeData.id === 'dev' && !modelConfig) {
       const ringGeometry = new THREE.RingGeometry(planetSize + DEV_RING.innerOffset, planetSize + DEV_RING.outerOffset, 64);
       const ringMaterial = new THREE.MeshStandardMaterial({
         color: DEV_RING.color,
@@ -221,6 +246,47 @@ function createPlanets() {
 
 }
 
+function loadPlanetModel(config, hitbox, scene) {
+  const dracoLoader = new THREE.DRACOLoader();
+  dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
+  const loader = new THREE.GLTFLoader();
+  loader.setDRACOLoader(dracoLoader);
+  loader.load(
+    config.path,
+    (gltf) => {
+      const model = gltf.scene;
+
+      // Auto-scale model to fit the hitbox radius
+      const box = new THREE.Box3().setFromObject(model);
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const targetDiameter = hitbox.geometry.parameters.radius * 2;
+      const autoScale = (targetDiameter / maxDim) * config.scale;
+      model.scale.setScalar(autoScale);
+
+      // Center the model on the hitbox
+      box.setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      model.position.sub(center);
+
+      // Wrap in a group for clean transforms
+      const group = new THREE.Group();
+      group.add(model);
+      group.position.copy(hitbox.position);
+      if (config.tiltX) group.rotation.x = config.tiltX;
+      if (config.tiltZ) group.rotation.z = config.tiltZ;
+      scene.add(group);
+
+      // Store reference on hitbox for animation sync
+      hitbox.userData.modelGroup = group;
+    },
+    undefined,
+    (error) => {
+      console.warn(`Failed to load model: ${config.path}`, error);
+    },
+  );
+}
+
 function animate() {
   State.set('threeAnimationId', requestAnimationFrame(animate));
 
@@ -237,13 +303,23 @@ function animate() {
 
   planets.forEach((planet) => {
     planet.mesh.rotation.y += planet.mesh.userData.rotationSpeed;
-    planet.glow.rotation.y += planet.mesh.userData.rotationSpeed;
 
     const time = Date.now() * 0.001;
     const floatOffset = Math.sin(time + planet.mesh.position.x) * 0.3;
     planet.mesh.position.y = planet.mesh.userData.originalY + floatOffset;
-    planet.glow.position.y = planet.mesh.position.y;
     planet.light.position.y = planet.mesh.position.y;
+
+    if (planet.glow) {
+      planet.glow.rotation.y += planet.mesh.userData.rotationSpeed;
+      planet.glow.position.y = planet.mesh.position.y;
+    }
+
+    // Sync .glb model with hitbox
+    const modelGroup = planet.mesh.userData.modelGroup;
+    if (modelGroup) {
+      modelGroup.position.copy(planet.mesh.position);
+      modelGroup.rotation.y = planet.mesh.rotation.y;
+    }
 
     if (planet.ring) {
       planet.ring.position.y = planet.mesh.position.y;
